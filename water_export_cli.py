@@ -1,4 +1,5 @@
 import re
+import json  # Added missing import
 import requests
 import pandas as pd
 from datetime import datetime, date, timedelta, timezone
@@ -17,6 +18,7 @@ TZ_LOCAL = tz.gettz("Asia/Ho_Chi_Minh")  # GMT+7
 OUT_DIR = Path("data")
 OUT_DIR.mkdir(exist_ok=True)
 OUT_CSV = OUT_DIR / "water_data_full_combined.csv"
+CONFIG_FILE = "config_stations.json"
 
 # ---- Determine fetch window based on existing CSV ----
 DEFAULT_END_DATE = datetime.now(TZ_LOCAL).date()
@@ -50,47 +52,26 @@ RIVER_HEADERS = {
     "Origin": "https://vndms.dmptc.gov.vn",
 }
 
-# ---- Lakes: ID + recoded basin + recoded province ----
-LAKE_CONFIG = {
-    "467D6521-FEAE-40F3-BC73-8E4B0B1F598F": {"name": "Pleikrông",       "basin_recode": "Sê San",           "province_recode": "Quảng Ngãi"},
-    "53e42d94-1faa-4029-93f0-739f8f5da487": {"name": "SeSan4",          "basin_recode": "Sê San",           "province_recode": "Gia Lai"},
-    "A11984FB-8CAD-44D7-BF9E-A0E881483E47": {"name": "Hương Điền",      "basin_recode": "Hương - Bồ",       "province_recode": "TP. Huế"},
-    "EE42CA6E-E5FC-4A9F-B90C-040211672E1B": {"name": "Sông Tranh 2",    "basin_recode": "Vu Gia - Thu Bồn", "province_recode": "TP. Đà Nẵng"},
-    "545B2C88-D719-42F1-8663-A1E796F44C14": {"name": "Ialy",            "basin_recode": "Sê San",           "province_recode": "Quảng Ngãi"},
-    "A72755CC-49FE-44AF-827D-7010EB7EBCB4": {"name": "Sông Bung 4",     "basin_recode": "Vu Gia - Thu Bồn", "province_recode": "TP. Đà Nẵng"},
-    "1D320527-2DC9-4C79-A00B-EBB16D44F735": {"name": "Bình Điền",       "basin_recode": "Hương - Bồ",       "province_recode": "TP. Huế"},
-    "fd622826-9f2e-4130-8995-1654bac81895": {"name": "Tả Trạch",        "basin_recode": "Hương - Bồ",       "province_recode": "TP. Huế"},
-    "D0C28BB9-FE47-4BC2-B0DB-445038C1D1C5": {"name": "Sông Hinh",       "basin_recode": "Ba",               "province_recode": "Đắk Lắk"},
-    "7D5B7DB0-D64A-4A36-BD4E-54A95CA62E9D": {"name": "Sông Ba Hạ",      "basin_recode": "Ba",               "province_recode": "Đắk Lắk"},
-    "72659CC3-2BB5-4E34-810E-96722BCE0F54": {"name": "A Vương",         "basin_recode": "Vu Gia - Thu Bồn", "province_recode": "TP. Đà Nẵng"},
-    "4AB3F3C8-D7F4-44AA-897C-E93BDCFA1DCC": {"name": "Kanak",           "basin_recode": "Ba",               "province_recode": "Gia Lai"},
-    "929f34bb-4d88-4364-8882-4099e75bcfd5": {"name": "Nước Trong",      "basin_recode": "Trà Khúc",         "province_recode": "Quảng Ngãi"},
-    "9CBE33CD-5CFB-4CB9-BAEB-59147A825DF0": {"name": "Ayun Hạ",         "basin_recode": "Ba",               "province_recode": "Gia Lai"},
-    "c9a8c4ca-f1bb-467f-82c4-0999294af8fc": {"name": "Định Bình",       "basin_recode": "Kôn - Hà Thanh",   "province_recode": "Gia Lai"},
-    "4006E5A9-4E5A-4A46-AC19-35F1233E6B4A": {"name": "Thượng Kon Tum",  "basin_recode": "Sê San",           "province_recode": "Quảng Ngãi"},
-    "73bb8be6-bbd6-4042-8360-30abdced336a": {"name": "Ia MLá",          "basin_recode": "Ba",               "province_recode": "Gia Lai"},
-    "9BFF6E76-94E2-4233-B659-258D74A1295F": {"name": "Trà Xom",         "basin_recode": "Kôn - Hà Thanh",   "province_recode": "Gia Lai"},
-    "062A7CF0-46F3-4E99-8BCD-040CEF304344": {"name": "Thuận Ninh",      "basin_recode": "Kôn - Hà Thanh",   "province_recode": "Gia Lai"},
-}
-LAKE_IDS = set(LAKE_CONFIG.keys())
+def load_config():
+    config_path = Path(CONFIG_FILE)
+    if not config_path.exists():
+        raise FileNotFoundError(f"Configuration file not found at {config_path}")
+    
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-# ---- Stations: ID + recoded basin ONLY ----
-STATION_CONFIG = {
-    "69702": {"name": "Kon Tum",   "basin_recode": "Sê San"},
-    "69704": {"name": "Kon Plông", "basin_recode": "Sê San"},
-    "71518": {"name": "Phú Ốc",    "basin_recode": "Hương - Bồ"},
-    "71520": {"name": "Kim Long",  "basin_recode": "Hương - Bồ"},
-    "71521": {"name": "Cẩm Lệ",    "basin_recode": "Vu Gia - Thu Bồn"},
-    "71527": {"name": "Ái Nghĩa",  "basin_recode": "Vu Gia - Thu Bồn"},
-    "71533": {"name": "Hội Khách", "basin_recode": "Vu Gia - Thu Bồn"},
-    "71540": {"name": "Trà Khúc",  "basin_recode": "Trà Khúc"},
-    "71549": {"name": "Bình Nghi", "basin_recode": "Kôn - Hà Thanh"},
-    "71558": {"name": "Củng Sơn",  "basin_recode": "Ba"},
-    "71559": {"name": "Phú Lâm",    "basin_recode": "Ba"},
-    "71708": {"name": "An Khê",     "basin_recode": "Ba"},
-    "71709": {"name": "AyunPa",     "basin_recode": "Ba"},
-}
-STATION_IDS = set(STATION_CONFIG.keys())
+try:
+    _config_data = load_config()
+    LAKE_CONFIG = _config_data.get("lakes", {})
+    STATION_CONFIG = _config_data.get("stations", {})
+    
+    LAKE_IDS = set(LAKE_CONFIG.keys())
+    STATION_IDS = set(STATION_CONFIG.keys())
+    
+    print(f"✅ Loaded configuration: {len(LAKE_CONFIG)} lakes, {len(STATION_CONFIG)} stations.")
+except Exception as e:
+    print(f"❌ Error loading config: {e}")
+    exit(1)
 
 # =========================
 # HELPERS
