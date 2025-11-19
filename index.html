@@ -12,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-JGB5XHREV0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -81,18 +80,14 @@
              onfocus="Search.showSuggestions()" onblur="setTimeout(Search.hideSuggestions, 200)" onkeyup="Search.filter()">
       <div id="search-suggestions" class="absolute mt-1 w-full bg-white rounded-lg shadow-lg overflow-hidden hidden max-h-60 overflow-y-auto custom-scroll">
         <ul id="suggestions-list">
-          <!-- Suggestions will be populated by JS -->
-        </ul>
+          </ul>
       </div>
     </div>
   </header>
 
   <div class="flex-none bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between gap-4 z-10">
-    <!-- Desktop Tabs -->
     <div id="basin-tabs" class="hidden lg:flex gap-1 min-w-max overflow-x-auto custom-scroll">
-      <!-- Basin tabs will be populated by JS -->
-    </div>
-    <!-- Mobile Dropdown -->
+      </div>
     <div class="lg:hidden flex-1">
         <select id="basin-select" class="w-full border rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition px-2 py-1.5 bg-white"></select>
     </div>
@@ -106,7 +101,6 @@
     
     <div class="flex-1 relative z-0">
       <div id="map" class="w-full h-full"></div>
-      <!-- Map Legend -->
       <div id="legend-wrapper" class="absolute bottom-2 left-2 z-[400] flex flex-col items-start gap-1">
         <div id="legend-container" class="bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-md text-slate-700 text-xs w-52 relative hidden">
           <button onclick="UI.toggleLegend()" class="absolute top-1 right-1 w-5 h-5 bg-slate-100/50 hover:bg-slate-200/70 rounded-full flex items-center justify-center text-slate-500 transition">
@@ -150,7 +144,6 @@
           Chú giải
         </button>
       </div>
-      <!-- Layer/Basemap Selector -->
       <div id="layer-control-wrapper" class="absolute bottom-2 right-2 z-[400] flex flex-col items-end gap-1">
         <div id="layer-control" class="bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-md flex flex-col gap-2 relative">
           <button onclick="UI.toggleLayerControl()" class="absolute top-1 right-1 w-5 h-5 bg-slate-100/50 hover:bg-slate-200/70 rounded-full flex items-center justify-center text-slate-500 transition">
@@ -192,8 +185,7 @@
           </button>
           <div id="summary-content" class="accordion-content bg-slate-50">
             <div id="summary-container" class="p-1.5 space-y-2 text-xs">
-              <!-- Summary content will be populated by JS -->
-            </div>
+              </div>
           </div>
         </div>
 
@@ -225,7 +217,6 @@
     </aside>
   </main>
 
-  <!-- Mobile Detail View -->
   <div id="detail-view" class="absolute inset-0 bg-white z-[1000] flex flex-col p-2 hidden transition-opacity duration-300 opacity-0">
     <div class="flex-none flex justify-between items-center mb-1 p-2">
       <div>
@@ -357,7 +348,9 @@
         storage: num(r['Dung tích (m3)']), percent: num(r['Tỷ lệ dung tích (%)']), designStorage: num(r['Dung tích TK (m3)']),
         qIn: num(r['Q đến (m3/s)']), qOut: num(r['Q xả (m3/s)']),
         bd1: num(r['BĐ1 (m)']), bd2: num(r['BĐ2 (m)']), bd3: num(r['BĐ3 (m)']),
-        lat: num(r['y']), lng: num(r['x'])
+        lat: num(r['y']), lng: num(r['x']),
+        historicalLevel: num(r['Mực nước lịch sử (m)']),
+        historicalYear: r['Năm lũ lịch sử'],
       };
     },
 
@@ -873,7 +866,7 @@
                 <div class="font-bold text-xs text-slate-800">${latest.name}</div>
                 <div class="text-[10px] text-slate-500">Sông ${latest.basin} • ${latest.province || ''}</div>
               </div>
-              <div class="text-xs font-mono font-bold" style="color: ${color};">Đầy ${valueText}</div>
+              <div class="text-xs font-mono font-bold" style="color: ${color};">${isLake ? 'Đầy ' : ''}${valueText}</div>
             </div>
             <div class="h-32 w-full relative"><canvas id="chart-${code}" data-code="${code}"></canvas></div>
             ${type === 'lake' ? `
@@ -1007,6 +1000,18 @@
           });
         }
       });
+      
+      if (latest.historicalLevel) {
+        datasets.push({
+          label: `Lũ lịch sử (${latest.historicalYear || ''})`,
+          data: Array(labels.length).fill(latest.historicalLevel),
+          borderColor: '#7e22ce', // Purple-700
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: false,
+        });
+      }
 
       const chart = new Chart(canvas, { type: 'line', data: { labels, datasets }, options: { ...this.commonOptions, plugins: { ...this.commonOptions.plugins, legend: { ...this.commonOptions.plugins.legend, display: true } } } });
       State.chartInstances.push(chart);
