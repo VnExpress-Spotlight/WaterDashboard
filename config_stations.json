@@ -19,8 +19,8 @@
     "73bb8be6-bbd6-4042-8360-30abdced336a": {"name": "Ia MLá",          "basin_recode": "Ba",               "province_recode": "Gia Lai"},
     "9BFF6E76-94E2-4233-B659-258D74A1295F": {"name": "Trà Xom",         "basin_recode": "Kôn - Hà Thanh",   "province_recode": "Gia Lai"},
     "062A7CF0-46F3-4E99-8BCD-040CEF304344": {"name": "Thuận Ninh",      "basin_recode": "Kôn - Hà Thanh",   "province_recode": "Gia Lai"},
-    "8ECDCB6D-7906-4E7F-BC43-1D0168F4F9F8": {"name": "Suối Dầu",        "basin_recode": "Cái",              "province_recode": "Khánh Hoà"},
-    "CC907CCC-DE55-4D62-A3A1-54CDE3FA1925": {"name": "Am Chúa",         "basin_recode": "Cái",              "province_recode": "Khánh Hoà"}
+    "8ECDCB6D-7906-4E7F-BC43-1D0168F4F9F8": {"name": "Suối Dầu",        "basin_recode": "Cái",              "province_recode": "Khánh Hòa"},
+    "CC907CCC-DE55-4D62-A3A1-54CDE3FA1925": {"name": "Am Chúa",         "basin_recode": "Cái",              "province_recode": "Khánh Hòa"}
   },
   "stations": {
     "69702": {"name": "Kon Tum",   "basin_recode": "Sê San"},
