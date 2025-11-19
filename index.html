@@ -21,30 +21,6 @@
   gtag('config', 'G-JGB5XHREV0');
 </script>
 
-<script>
-  // DOMAIN CHECK LOGIC ADDED HERE
-  function checkDomain() {
-    var checked = true;
-    try {
-      var ref = document.referrer || null;
-      if (ref != null || ref != "") {
-        var a = document.createElement('a');
-        a.href = ref;
-        if (a.host.indexOf('vnexpress.net') == -1) {
-          checked = false;
-        }
-      }
-    } catch (e) {
-      checked = true;
-    }
-    return checked;
-  }
-
-  if (!checkDomain()) {
-    window.location.href = 'https://vnexpress.net';
-  }
-</script>
-
   <style>
       body { font-family: 'Inter', sans-serif; }
       
