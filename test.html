@@ -75,9 +75,12 @@
           <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
         </svg>
       </div>
-      <input type="text" id="search-input" placeholder="Tìm vị trí hoặc tỉnh thành" 
+      <!-- UPDATED INPUT: changed placeholder and onkeyup event -->
+      <input type="text" id="search-input" placeholder="Tìm theo vị trí hoặc địa điểm" 
              class="w-full pl-10 pr-4 py-2 border rounded-full text-base lg:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-             onfocus="Search.showSuggestions()" onblur="setTimeout(Search.hideSuggestions, 200)" onkeyup="Search.filter()">
+             onfocus="Search.showSuggestions()" 
+             onblur="setTimeout(Search.hideSuggestions, 200)" 
+             onkeyup="Search.handleInput()">
       <div id="search-suggestions" class="absolute mt-1 w-full bg-white rounded-lg shadow-lg overflow-hidden hidden max-h-60 overflow-y-auto custom-scroll">
         <ul id="suggestions-list">
           </ul>
@@ -1119,80 +1122,137 @@
 
 
   /**
-   * MODULE: SEARCH
+   * MODULE: SEARCH (Nominatim Integration)
    */
   const Search = {
-    getSortedProvinces() {
-      const prioritized = [
-        'TP Huế',
-        'TP Đà Nẵng',
-        'tỉnh Quảng Ngãi', 
-        'tỉnh Gia Lai', 
-        'tỉnh Đắk Lắk',
-      ];
-      const allProvinces = [...new Set(State.provinces.map(f => f.properties['Tỉnh thành mới']))];
-      const remaining = allProvinces
-        .filter(p => !prioritized.includes(p))
-        .sort((a, b) => a.localeCompare(b, 'vi'));
-      return [...prioritized, ...remaining];
-    },
+    debounceTimer: null,
+    
+    // Hiển thị khung gợi ý
     showSuggestions() {
-      const suggestionsEl = document.getElementById('search-suggestions');
-      const listEl = document.getElementById('suggestions-list');
-      suggestionsEl.classList.remove('hidden');
-      this.filter(); // Just call filter to populate
+      const input = document.getElementById('search-input');
+      if(input.value.trim() !== "") {
+         document.getElementById('search-suggestions').classList.remove('hidden');
+      }
     },
+
+    // Ẩn khung gợi ý
     hideSuggestions() {
       document.getElementById('search-suggestions').classList.add('hidden');
     },
-    filter() {
+
+    // Xử lý khi người dùng gõ phím (Debounce 500ms)
+    handleInput() {
       const input = document.getElementById('search-input');
-      const filter = input.value.toUpperCase();
+      const query = input.value.trim();
+      
+      // Xóa timer cũ nếu người dùng vẫn đang gõ
+      if (this.debounceTimer) clearTimeout(this.debounceTimer);
+
       const listEl = document.getElementById('suggestions-list');
-      listEl.innerHTML = ''; // Clear current suggestions
-
-      const createSuggestionItem = (text, value, isProvince) => {
-        // Use innerHTML to allow for icons
-        const li = document.createElement('li');
-        li.className = 'suggestion-item px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm';
-        li.innerHTML = text;
-        li.dataset.value = value;
-        li.onclick = () => isProvince ? this.selectProvince(value) : this.useMyLocation();
-        listEl.appendChild(li);
-      };
-
-      // Add "Your Location" with a locator icon
-      const myLocationHTML = `
-        <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Vị trí của bạn</div>
-      `;
-      createSuggestionItem(myLocationHTML, 'my-location', false);
-
-      const provinceNames = this.getSortedProvinces();
-      provinceNames.forEach(name => {
-        if (name.toUpperCase().indexOf(filter) > -1) {
-          createSuggestionItem(name.replace('tỉnh ', '').replace('thành phố ', ''), name, true);
-        }
-      });
-    },
-    useMyLocation() {
-      MapManager.instance.locate({setView: true, maxZoom: 10});
-    },
-    selectProvince(name) {
-      // Clear any existing highlight first for efficiency
-      MapManager.layers.highlight.clearLayers();
-
-      const province = State.provinces.find(f => f.properties['Tỉnh thành mới'] === name);
-      if (province) {
-        const highlightStyle = {
-          color: '#facc15', // yellow-400
-          weight: 3,
-          opacity: 1,
-          fillColor: 'transparent',
-          fillOpacity: 0
-        };
-        const layer = L.geoJSON(province, { style: highlightStyle }).addTo(MapManager.layers.highlight);
-        MapManager.instance.flyToBounds(layer.getBounds(), { padding: [50, 50], duration: 1 });
+      
+      // Nếu ô input trống, xóa danh sách và ẩn
+      if (!query) {
+        listEl.innerHTML = '';
+        this.addMyLocationOption(listEl); // Luôn hiển thị tùy chọn vị trí của tôi
+        this.showSuggestions();
+        return;
       }
+
+      // Đợi 500ms sau khi ngừng gõ mới gọi API
+      this.debounceTimer = setTimeout(() => {
+        this.fetchNominatim(query);
+      }, 500);
+    },
+
+    // Gọi API Nominatim
+    async fetchNominatim(query) {
+      try {
+        // countrycodes=vn: Giới hạn tìm kiếm trong Việt Nam
+        // addressdetails=1: Lấy chi tiết địa chỉ
+        // limit=5: Giới hạn 5 kết quả
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&countrycodes=vn&limit=5&addressdetails=1`;
+        
+        const response = await fetch(url, {
+            headers: {
+                'Accept-Language': 'vi' // Ưu tiên kết quả tiếng Việt
+            }
+        });
+        
+        if (!response.ok) throw new Error('Lỗi kết nối');
+        const results = await response.json();
+        this.renderSuggestions(results);
+      } catch (error) {
+        console.error("Lỗi tìm kiếm:", error);
+      }
+    },
+
+    // Hiển thị kết quả ra danh sách
+    renderSuggestions(results) {
+      const listEl = document.getElementById('suggestions-list');
+      listEl.innerHTML = '';
+
+      // 1. Luôn thêm tùy chọn "Vị trí của bạn" ở đầu
+      this.addMyLocationOption(listEl);
+
+      // 2. Thêm các kết quả từ API
+      results.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'suggestion-item px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm border-t border-slate-100 truncate';
+        li.textContent = item.display_name; // Tên hiển thị đầy đủ từ Nominatim
+        li.onclick = () => this.selectLocation(item);
+        listEl.appendChild(li);
+      });
+
+      document.getElementById('search-suggestions').classList.remove('hidden');
+    },
+
+    // Helper thêm nút Vị trí của bạn
+    addMyLocationOption(container) {
+        const li = document.createElement('li');
+        li.className = 'suggestion-item px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm flex items-center gap-2 text-blue-600 font-medium';
+        li.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Vị trí của bạn
+        `;
+        li.onclick = () => this.useMyLocation();
+        container.appendChild(li);
+    },
+
+    // Xử lý khi chọn Vị trí của bạn
+    useMyLocation() {
+      MapManager.instance.locate({setView: true, maxZoom: 12});
+      this.hideSuggestions();
+    },
+
+    // Xử lý khi chọn một địa điểm từ kết quả tìm kiếm
+    selectLocation(item) {
+      // Nominatim trả về boundingbox dạng chuỗi: [minLat, maxLat, minLon, maxLon]
+      if (item.boundingbox) {
+        const bb = item.boundingbox;
+        // Leaflet fitBounds nhận [[lat1, lon1], [lat2, lon2]]
+        // Cần parse float vì API trả về string
+        const bounds = [
+            [parseFloat(bb[0]), parseFloat(bb[2])], // minLat, minLon
+            [parseFloat(bb[1]), parseFloat(bb[3])]  // maxLat, maxLon
+        ];
+        MapManager.instance.fitBounds(bounds);
+      } else {
+        // Fallback nếu không có bbox
+        MapManager.instance.setView([parseFloat(item.lat), parseFloat(item.lon)], 14);
+      }
+      
+      // Xóa highlight cũ và thêm marker mới vào vị trí tìm được
+      MapManager.layers.highlight.clearLayers();
+      L.marker([parseFloat(item.lat), parseFloat(item.lon)])
+        .addTo(MapManager.layers.highlight)
+        .bindPopup(item.display_name)
+        .openPopup();
+      
+      this.hideSuggestions();
+      document.getElementById('search-input').value = item.display_name;
     }
   };
 
