@@ -1,0 +1,131 @@
+name: Water Data Export
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # chạy mỗi giờ, phút 00 UTC
+  workflow_dispatch:       # cho phép chạy tay
+
+# 👇 Thêm đoạn này
+permissions:
+  contents: write
+
+jobs:
+  export-all-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 1. Run Water Tracker
+      - name: Run Water Tracker
+        run: python water_export_cli.py
+
+      # 2. Run Landslide Tracker
+      - name: Run Landslide Tracker
+        run: python landslide_export_cli.py
+
+      # 3. Generate HTML Summary
+      - name: Generate HTML Summary
+        id: summary
+        run: |
+          HTML_FILE="email_summary.html"
+          HAS_CHANGES="false"          
+          echo "<h3>🌊⛰️ Data Update Report</h3>" > $HTML_FILE
+          
+          # --- CHECK WATER DATA ---
+          if [ -f data/water_data_full_combined.csv ]; then
+             # Intent-to-add ensures diff picks it up even if it's a new file
+             git add -N data/water_data_full_combined.csv || true
+          fi
+          
+          if git diff --quiet data/water_data_full_combined.csv; then
+             echo "<p>No new water data.</p>" >> $HTML_FILE
+          else
+             echo "<h4>💧 Water Levels</h4>" >> $HTML_FILE
+             echo "<table border='1' cellpadding='3' cellspacing='0' width='100%'>" >> $HTML_FILE
+             echo "<tr style='background:#f0f0f0'><th>Station</th><th>Time</th><th>Level</th><th>Alert</th></tr>" >> $HTML_FILE
+             git diff -U0 data/water_data_full_combined.csv \
+               | grep "^+[^+]" | sed 's/^+//' \
+               | cut -d, -f3,6,7,8 \
+               | awk -F, '{print "<tr><td>" $1 "</td><td>" $2 "</td><td>" $3 "</td><td>" $4 "</td></tr>"}' \
+               >> $HTML_FILE
+             echo "</table>" >> $HTML_FILE
+             HAS_CHANGES="true"
+          fi
+
+          # --- CHECK LANDSLIDE DATA ---
+          if [ -f data/landslide.csv ]; then
+             # Intent-to-add ensures diff picks it up even if it's a new file
+             git add -N data/landslide.csv || true
+          fi
+
+          if git diff --quiet data/landslide.csv; then
+             echo "<p>No new landslide warnings.</p>" >> $HTML_FILE
+          else
+             echo "<h4>⛰️ Landslide Warnings</h4>" >> $HTML_FILE
+             echo "<table border='1' cellpadding='3' cellspacing='0' width='100%'>" >> $HTML_FILE
+             echo "<tr style='background:#f0f0f0'><th>Time</th><th>Province</th><th>Commune</th><th>Risk</th></tr>" >> $HTML_FILE
+             git diff -U0 data/landslide.csv \
+               | grep "^+[^+]" | sed 's/^+//' \
+               | awk -F, '{print "<tr><td>" $1 "</td><td>" $4 "</td><td>" $3 "</td><td>" $5 "</td></tr>"}' \
+               >> $HTML_FILE
+             echo "</table>" >> $HTML_FILE
+             HAS_CHANGES="true"
+          fi
+
+          echo "HAS_CHANGES=$HAS_CHANGES" >> $GITHUB_OUTPUT
+
+      # 4. Create Pull Request
+      - name: Create Pull Request
+        if: steps.summary.outputs.HAS_CHANGES == 'true'
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Auto: Update Water & Landslide Data"
+          title: "🌊⛰️ Data Update: ${{ steps.date.outputs.date }}"
+          body: |
+            New data fetched for rivers/lakes and landslides.
+            **Action:** Merge to accept, Close to decline.
+          branch: data-update-patch
+          delete-branch: true
+          base: main
+          add-paths: |
+            data/water_data_full_combined.csv
+            data/landslide.csv
+
+      # 5. Add Link to Email
+      - name: Add Link to Email Body
+        if: steps.cpr.outputs.pull-request-url != ''
+        run: |
+          echo "<br><hr>" >> email_summary.html
+          echo "<h3>⚠️ Validation Required</h3>" >> email_summary.html
+          echo "<p>Review and Approve/Decline here: <a href='${{ steps.cpr.outputs.pull-request-url }}'>${{ steps.cpr.outputs.pull-request-url }}</a></p>" >> email_summary.html
+
+      # 6. Send Email
+      - name: Send Email Notification
+        if: steps.cpr.outputs.pull-request-url != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Data Action Required #${{ steps.cpr.outputs.pull-request-number }}"
+          to: spotlight.vnexpress@gmail.com,spotlight@vnexpress.com.vn
+          from: "Data Bot"
+          html_body: file://email_summary.html
