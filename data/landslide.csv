@@ -1,156 +1,149 @@
 ﻿time,commune_id_2cap,commune_name_2cap,provinceName_2cap,nguycosatlo,nguycoluquet
-2025-11-20 18:00:00,2051,An Hòa,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2048,An Lão,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2069,An Lương,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2049,An Vinh,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2099,Canh Vinh,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2084,Cát Tiến,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2054,Hoài Nhơn Bắc,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2055,Hoài Nhơn Tây,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2082,Hội Sơn,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2174,Ia Dreh,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2086,Ngô Mây,Gia Lai,Rất cao,Rất cao
-2025-11-20 18:00:00,2080,Phù Cát,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2064,Phù Mỹ,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2067,Phù Mỹ Đông,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2043,Quy Nhơn,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2045,Quy Nhơn Nam,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2044,Quy Nhơn Tây,Gia Lai,Cao,Cao
-2025-11-20 18:00:00,2052,Tam Quan,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2096,Tuy Phước Tây,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2095,Tuy Phước Đông,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2097,Vân Canh,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2085,Xuân An,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2060,Ân Hảo,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2081,Đề Gi,Gia Lai,Trung bình,Trung bình
-2025-11-20 18:00:00,2228,Anh Dũng,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2183,Ba Ngòi,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2223,Bác Ái,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2222,Bác Ái Tây,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2224,Bác Ái Đông,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2181,Bắc Cam Ranh,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2177,Bắc Nha Trang,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2195,Bắc Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2187,Cam An,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2185,Cam Hiệp,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2184,Cam Linh,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2186,Cam Lâm,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2182,Cam Ranh,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2230,Công Hải,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2207,Diên Khánh,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2209,Diên Lâm,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2211,Diên Lạc,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2210,Diên Thọ,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2208,Diên Điền,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2200,Hòa Thắng,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2197,Hòa Trí,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2214,Khánh Sơn,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2202,Khánh Vĩnh,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2226,Lâm Sơn,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2227,Mỹ Sơn,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2188,Nam Cam Ranh,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2206,Nam Khánh Vĩnh,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2180,Nam Nha Trang,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2201,Nam Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2178,Nha Trang,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2194,Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2233,Ninh Hải,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2225,Ninh Sơn,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2213,Suối Dầu,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2212,Suối Hiệp,Khánh Hòa,,Cao
-2025-11-20 18:00:00,2232,Thuận Bắc,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2190,Tu Bông,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2199,Tân Định,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2215,Tây Khánh Sơn,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2205,Tây Khánh Vĩnh,Khánh Hòa,Trung bình,Trung bình
-2025-11-20 18:00:00,2179,Tây Nha Trang,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2196,Tây Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2193,Vạn Hưng,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2189,Vạn Ninh,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2192,Vạn Thắng,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2216,Đông Khánh Sơn,Khánh Hòa,Cao,Cao
-2025-11-20 18:00:00,2198,Đông Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,2191,Đại Lãnh,Khánh Hòa,Rất cao,Rất cao
-2025-11-20 18:00:00,380,Dào San,Lai Châu,Trung bình,Trung bình
-2025-11-20 18:00:00,381,Khổng Lào,Lai Châu,Trung bình,Trung bình
-2025-11-20 18:00:00,2419,Cam Ly - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2438,D'Ran,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2425,Lang Biang - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2417,Lâm Viên - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2426,Lạc Dương,Lâm Đồng,Rất cao,Rất cao
-2025-11-20 18:00:00,2418,Xuân Hương - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2420,Xuân Trường - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,2427,Đam Rông 4,Lâm Đồng,Trung bình,Trung bình
-2025-11-20 18:00:00,1998,Ba Tô,Quảng Ngãi,Cao,Cao
-2025-11-20 18:00:00,1995,Ba Động,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1952,Bình Chương,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1951,Bình Minh,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1991,Khánh Cường,Quảng Ngãi,Rất cao,Rất cao
-2025-11-20 18:00:00,1987,Lân Phong,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1984,Mộ Đức,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1990,Nguyễn Nghiêm,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1992,Sa Huỳnh,Quảng Ngãi,Rất cao,Rất cao
-2025-11-20 18:00:00,1955,Thanh Bồng,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1967,Vệ Giang,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1982,Đình Cương,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1997,Đặng Thùy Trâm,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1988,Đức Phổ,Quảng Ngãi,Trung bình,Trung bình
-2025-11-20 18:00:00,1847,Chân Mây - Lăng Cô,TP. Huế,Trung bình,Trung bình
-2025-11-20 18:00:00,1844,Phú Lộc,TP. Huế,Cao,Cao
-2025-11-20 18:00:00,1845,Vinh Lộc,TP. Huế,Trung bình,Trung bình
-2025-11-20 18:00:00,1872,Chiên Đàn,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-20 18:00:00,1937,Nam Trà My,TP. Đà Nẵng,Cao,Cao
-2025-11-20 18:00:00,1940,Núi Thành,TP. Đà Nẵng,Cao,Cao
-2025-11-20 18:00:00,1874,Phú Ninh,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-20 18:00:00,1943,Tam Anh,TP. Đà Nẵng,Cao,Cao
-2025-11-20 18:00:00,1945,Tam Mỹ,TP. Đà Nẵng,Cao,Cao
-2025-11-20 18:00:00,1941,Tam Xuân,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-20 18:00:00,1931,Trà Liên,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-20 18:00:00,1942,Đức Phú,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-20 18:00:00,2243,Bình Kiến,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2319,Cư M’ta,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2317,Cư Prao,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2325,Cư Pui,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2315,Cư Yang,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2323,Dang Kang,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2264,Ea Bá,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2311,Ea Kar,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2328,Ea Kly,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2312,Ea Knốp,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2265,Ea Ly,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2334,Ea Ning,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2329,Ea Phê,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2313,Ea Păl,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2318,Ea Riêng,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2321,Ea Trang,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2314,Ea Ô,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2272,Hòa Mỹ,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2324,Hòa Sơn,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2271,Hòa Thịnh,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2273,Hòa Xuân,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2322,Krông Bông,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2327,Krông Pắc,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2320,Krông Á,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2316,M’Drắk,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2275,Phú Hòa 1,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2274,Phú Hòa 2,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2261,Suối Trai,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2262,Sông Hinh,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2258,Sơn Hòa,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2267,Sơn Thành,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2253,Tuy An Bắc,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2257,Tuy An Nam,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2255,Tuy An Tây,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2242,Tuy Hòa,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2331,Tân Tiến,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2259,Tây Sơn,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2260,Vân Hòa,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2332,Vụ Bổn,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2246,Xuân Cảnh,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2245,Xuân Lộc,Đắk Lắk,Cao,Cao
-2025-11-20 18:00:00,2247,Xuân Thọ,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2248,Xuân Đài,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2326,Yang Mao,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2269,Đông Hòa,Đắk Lắk,Rất cao,Rất cao
-2025-11-20 18:00:00,2249,Đồng Xuân,Đắk Lắk,Trung bình,Trung bình
-2025-11-20 18:00:00,2263,Đức Bình,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2051,An Hòa,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2048,An Lão,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2069,An Lương,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2049,An Vinh,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2099,Canh Vinh,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2084,Cát Tiến,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2054,Hoài Nhơn Bắc,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2082,Hội Sơn,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2086,Ngô Mây,Gia Lai,Rất cao,Rất cao
+2025-11-20 20:00:00,2080,Phù Cát,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2064,Phù Mỹ,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2067,Phù Mỹ Đông,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2043,Quy Nhơn,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2045,Quy Nhơn Nam,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2044,Quy Nhơn Tây,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2046,Quy Nhơn Đông,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2052,Tam Quan,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2093,Tuy Phước,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2094,Tuy Phước Bắc,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2096,Tuy Phước Tây,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2095,Tuy Phước Đông,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2097,Vân Canh,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2085,Xuân An,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2060,Ân Hảo,Gia Lai,Trung bình,Trung bình
+2025-11-20 20:00:00,2081,Đề Gi,Gia Lai,Cao,Cao
+2025-11-20 20:00:00,2183,Ba Ngòi,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2222,Bác Ái Tây,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2224,Bác Ái Đông,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2181,Bắc Cam Ranh,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2177,Bắc Nha Trang,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2195,Bắc Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2187,Cam An,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2185,Cam Hiệp,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2184,Cam Linh,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2186,Cam Lâm,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2182,Cam Ranh,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2230,Công Hải,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2207,Diên Khánh,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2209,Diên Lâm,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2211,Diên Lạc,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2210,Diên Thọ,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2208,Diên Điền,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2200,Hòa Thắng,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2197,Hòa Trí,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2214,Khánh Sơn,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2202,Khánh Vĩnh,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2227,Mỹ Sơn,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2188,Nam Cam Ranh,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2206,Nam Khánh Vĩnh,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2180,Nam Nha Trang,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2201,Nam Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2178,Nha Trang,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2194,Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2213,Suối Dầu,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2212,Suối Hiệp,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2232,Thuận Bắc,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2190,Tu Bông,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2199,Tân Định,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2215,Tây Khánh Sơn,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2205,Tây Khánh Vĩnh,Khánh Hòa,Trung bình,Trung bình
+2025-11-20 20:00:00,2179,Tây Nha Trang,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2196,Tây Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2193,Vạn Hưng,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2189,Vạn Ninh,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2192,Vạn Thắng,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2216,Đông Khánh Sơn,Khánh Hòa,Cao,Cao
+2025-11-20 20:00:00,2198,Đông Ninh Hòa,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,2191,Đại Lãnh,Khánh Hòa,Rất cao,Rất cao
+2025-11-20 20:00:00,380,Dào San,Lai Châu,Trung bình,Trung bình
+2025-11-20 20:00:00,381,Khổng Lào,Lai Châu,Trung bình,Trung bình
+2025-11-20 20:00:00,2438,D'Ran,Lâm Đồng,Trung bình,Trung bình
+2025-11-20 20:00:00,2425,Lang Biang - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
+2025-11-20 20:00:00,2417,Lâm Viên - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
+2025-11-20 20:00:00,2426,Lạc Dương,Lâm Đồng,Rất cao,Rất cao
+2025-11-20 20:00:00,2420,Xuân Trường - Đà Lạt,Lâm Đồng,Trung bình,Trung bình
+2025-11-20 20:00:00,1998,Ba Tô,Quảng Ngãi,Cao,Cao
+2025-11-20 20:00:00,1995,Ba Động,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1952,Bình Chương,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1951,Bình Minh,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1991,Khánh Cường,Quảng Ngãi,Rất cao,Rất cao
+2025-11-20 20:00:00,1987,Lân Phong,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1984,Mộ Đức,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1990,Nguyễn Nghiêm,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1992,Sa Huỳnh,Quảng Ngãi,Rất cao,Rất cao
+2025-11-20 20:00:00,1955,Thanh Bồng,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1967,Vệ Giang,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1982,Đình Cương,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1997,Đặng Thùy Trâm,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1988,Đức Phổ,Quảng Ngãi,Trung bình,Trung bình
+2025-11-20 20:00:00,1847,Chân Mây - Lăng Cô,TP. Huế,Trung bình,Trung bình
+2025-11-20 20:00:00,1844,Phú Lộc,TP. Huế,Trung bình,Trung bình
+2025-11-20 20:00:00,1845,Vinh Lộc,TP. Huế,Trung bình,Trung bình
+2025-11-20 20:00:00,1872,Chiên Đàn,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,1937,Nam Trà My,TP. Đà Nẵng,Cao,Cao
+2025-11-20 20:00:00,1940,Núi Thành,TP. Đà Nẵng,Cao,Cao
+2025-11-20 20:00:00,1874,Phú Ninh,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,1943,Tam Anh,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,1945,Tam Mỹ,TP. Đà Nẵng,Cao,Cao
+2025-11-20 20:00:00,1941,Tam Xuân,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,1931,Trà Liên,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,1942,Đức Phú,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-20 20:00:00,2243,Bình Kiến,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2319,Cư M’ta,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2317,Cư Prao,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2325,Cư Pui,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2315,Cư Yang,Đắk Lắk,,Rất cao
+2025-11-20 20:00:00,2323,Dang Kang,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2264,Ea Bá,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2311,Ea Kar,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2328,Ea Kly,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2312,Ea Knốp,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2265,Ea Ly,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2329,Ea Phê,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2313,Ea Păl,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2318,Ea Riêng,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2321,Ea Trang,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2314,Ea Ô,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2272,Hòa Mỹ,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2324,Hòa Sơn,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2271,Hòa Thịnh,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2273,Hòa Xuân,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2322,Krông Bông,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2320,Krông Á,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2316,M’Drắk,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2275,Phú Hòa 1,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2274,Phú Hòa 2,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2261,Suối Trai,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2244,Sông Cầu,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2262,Sông Hinh,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2258,Sơn Hòa,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2267,Sơn Thành,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2253,Tuy An Bắc,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2257,Tuy An Nam,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2255,Tuy An Tây,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2242,Tuy Hòa,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2331,Tân Tiến,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2259,Tây Sơn,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2260,Vân Hòa,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2332,Vụ Bổn,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2246,Xuân Cảnh,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2245,Xuân Lộc,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2252,Xuân Phước,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2247,Xuân Thọ,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2248,Xuân Đài,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2326,Yang Mao,Đắk Lắk,Cao,Cao
+2025-11-20 20:00:00,2269,Đông Hòa,Đắk Lắk,Rất cao,Rất cao
+2025-11-20 20:00:00,2249,Đồng Xuân,Đắk Lắk,Trung bình,Trung bình
+2025-11-20 20:00:00,2263,Đức Bình,Đắk Lắk,Rất cao,Rất cao
