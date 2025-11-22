@@ -1,31 +1,20 @@
 ﻿time,commune_id_2cap,commune_name_2cap,provinceName_2cap,nguycosatlo,nguycoluquet
-2025-11-21 23:00:00,2099,Canh Vinh,Gia Lai,Trung bình,Trung bình
-2025-11-21 23:00:00,2183,Ba Ngòi,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2224,Bác Ái Đông,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2241,Cà Ná,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2230,Công Hải,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2208,Diên Điền,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2202,Khánh Vĩnh,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2237,Phước Dinh,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2213,Suối Dầu,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2232,Thuận Bắc,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2190,Tu Bông,Khánh Hòa,Rất cao,Rất cao
-2025-11-21 23:00:00,2189,Vạn Ninh,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2198,Đông Ninh Hòa,Khánh Hòa,Trung bình,Trung bình
-2025-11-21 23:00:00,2191,Đại Lãnh,Khánh Hòa,Rất cao,Rất cao
-2025-11-21 23:00:00,2426,Lạc Dương,Lâm Đồng,Trung bình,Trung bình
-2025-11-21 23:00:00,1937,Nam Trà My,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-21 23:00:00,2243,Bình Kiến,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2319,Cư M’ta,Đắk Lắk,Cao,Cao
-2025-11-21 23:00:00,2318,Ea Riêng,Đắk Lắk,Rất cao,Rất cao
-2025-11-21 23:00:00,2272,Hòa Mỹ,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2273,Hòa Xuân,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2275,Phú Hòa 1,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2262,Sông Hinh,Đắk Lắk,Rất cao,Rất cao
-2025-11-21 23:00:00,2258,Sơn Hòa,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2267,Sơn Thành,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2255,Tuy An Tây,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2242,Tuy Hòa,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2260,Vân Hòa,Đắk Lắk,Cao,Cao
-2025-11-21 23:00:00,2269,Đông Hòa,Đắk Lắk,Trung bình,Trung bình
-2025-11-21 23:00:00,2263,Đức Bình,Đắk Lắk,Rất cao,Rất cao
+2025-11-22 06:00:00,2099,Canh Vinh,Gia Lai,Trung bình,Trung bình
+2025-11-22 06:00:00,2183,Ba Ngòi,Khánh Hòa,Trung bình,Trung bình
+2025-11-22 06:00:00,2230,Công Hải,Khánh Hòa,Trung bình,Trung bình
+2025-11-22 06:00:00,2232,Thuận Bắc,Khánh Hòa,Trung bình,Trung bình
+2025-11-22 06:00:00,2190,Tu Bông,Khánh Hòa,Cao,Cao
+2025-11-22 06:00:00,2191,Đại Lãnh,Khánh Hòa,Cao,Cao
+2025-11-22 06:00:00,2426,Lạc Dương,Lâm Đồng,Trung bình,Trung bình
+2025-11-22 06:00:00,2243,Bình Kiến,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2319,Cư M’ta,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2318,Ea Riêng,Đắk Lắk,Cao,Cao
+2025-11-22 06:00:00,2272,Hòa Mỹ,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2273,Hòa Xuân,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2275,Phú Hòa 1,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2262,Sông Hinh,Đắk Lắk,Rất cao,Rất cao
+2025-11-22 06:00:00,2267,Sơn Thành,Đắk Lắk,Cao,Cao
+2025-11-22 06:00:00,2255,Tuy An Tây,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2242,Tuy Hòa,Đắk Lắk,Trung bình,Trung bình
+2025-11-22 06:00:00,2260,Vân Hòa,Đắk Lắk,Cao,Cao
+2025-11-22 06:00:00,2263,Đức Bình,Đắk Lắk,Rất cao,Rất cao
