@@ -1,35 +1,69 @@
 ﻿time,commune_id_2cap,commune_name_2cap,provinceName_2cap,nguycosatlo,nguycoluquet
-2025-11-23 11:00:00,2051,An Hòa,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2069,An Lương,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2065,Bình Dương,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2098,Canh Liên,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2099,Canh Vinh,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2057,Hoài Nhơn Đông,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2059,Hoài Ân,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2083,Hòa Hội,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2082,Hội Sơn,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2063,Kim Sơn,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2064,Phù Mỹ,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2066,Phù Mỹ Bắc,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2070,Phù Mỹ Nam,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2068,Phù Mỹ Tây,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2067,Phù Mỹ Đông,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2044,Quy Nhơn Tây,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2097,Vân Canh,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2061,Vạn Đức,Gia Lai,Trung bình,Trung bình
-2025-11-23 11:00:00,2062,Ân Tường,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2081,Đề Gi,Gia Lai,Cao,Cao
-2025-11-23 11:00:00,2190,Tu Bông,Khánh Hòa,Trung bình,Trung bình
-2025-11-23 11:00:00,2191,Đại Lãnh,Khánh Hòa,Trung bình,Trung bình
-2025-11-23 11:00:00,2370,Hàm Kiệm,Lâm Đồng,Trung bình,Trung bình
-2025-11-23 11:00:00,1998,Ba Tô,Quảng Ngãi,Trung bình,Trung bình
-2025-11-23 11:00:00,1874,Phú Ninh,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-23 11:00:00,1945,Tam Mỹ,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-23 11:00:00,1931,Trà Liên,TP. Đà Nẵng,Trung bình,Trung bình
-2025-11-23 11:00:00,566,Phong Quang,Thái Nguyên,Cao,Cao
-2025-11-23 11:00:00,2319,Cư M’ta,Đắk Lắk,Trung bình,Trung bình
-2025-11-23 11:00:00,2318,Ea Riêng,Đắk Lắk,Trung bình,Trung bình
-2025-11-23 11:00:00,2320,Krông Á,Đắk Lắk,Trung bình,Trung bình
-2025-11-23 11:00:00,2262,Sông Hinh,Đắk Lắk,Trung bình,Trung bình
-2025-11-23 11:00:00,2260,Vân Hòa,Đắk Lắk,Trung bình,Trung bình
-2025-11-23 11:00:00,2263,Đức Bình,Đắk Lắk,Cao,Cao
+2025-11-24 06:00:00,2069,An Lương,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2092,An Nhơn Nam,Gia Lai,Rất cao,Rất cao
+2025-11-24 06:00:00,2091,An Nhơn Tây,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,2079,Bình Phú,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2098,Canh Liên,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2099,Canh Vinh,Gia Lai,Rất cao,Rất cao
+2025-11-24 06:00:00,2084,Cát Tiến,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2059,Hoài Ân,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2083,Hòa Hội,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2082,Hội Sơn,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,2086,Ngô Mây,Gia Lai,Rất cao,Rất cao
+2025-11-24 06:00:00,2080,Phù Cát,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2064,Phù Mỹ,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2070,Phù Mỹ Nam,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2067,Phù Mỹ Đông,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2043,Quy Nhơn,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2042,Quy Nhơn Bắc,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,2045,Quy Nhơn Nam,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2044,Quy Nhơn Tây,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,2046,Quy Nhơn Đông,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2093,Tuy Phước,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2094,Tuy Phước Bắc,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2096,Tuy Phước Tây,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2095,Tuy Phước Đông,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2097,Vân Canh,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,2085,Xuân An,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2062,Ân Tường,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2140,Đăk Song,Gia Lai,Trung bình,Trung bình
+2025-11-24 06:00:00,2081,Đề Gi,Gia Lai,Cao,Cao
+2025-11-24 06:00:00,1963,Ba Gia,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1998,Ba Tô,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1993,Ba Tơ,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1994,Ba Vinh,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1995,Ba Động,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1972,Sơn Linh,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1983,Thiện Tín,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1968,Trà Giang,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1959,Tây Trà Bồng,Quảng Ngãi,Trung bình,Trung bình
+2025-11-24 06:00:00,1838,Bình Điền,TP. Huế,Trung bình,Trung bình
+2025-11-24 06:00:00,1847,Chân Mây - Lăng Cô,TP. Huế,Cao,Cao
+2025-11-24 06:00:00,1846,Hưng Lộc,TP. Huế,Trung bình,Trung bình
+2025-11-24 06:00:00,1848,Lộc An,TP. Huế,Trung bình,Trung bình
+2025-11-24 06:00:00,1844,Phú Lộc,TP. Huế,Trung bình,Trung bình
+2025-11-24 06:00:00,1863,Bà Nà,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1872,Chiên Đàn,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1912,Khâm Đức,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1928,Lãnh Ngọc,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1903,Nông Sơn,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1940,Núi Thành,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1874,Phú Ninh,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1915,Phước Chánh,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1927,Sơn Cẩm Hà,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1943,Tam Anh,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1945,Tam Mỹ,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1941,Tam Xuân,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1923,Thăng Phú,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1929,Thạnh Bình,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1926,Tiên Phước,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1931,Trà Liên,TP. Đà Nẵng,Cao,Cao
+2025-11-24 06:00:00,1930,Trà My,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1873,Tây Hồ,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1917,Việt An,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,1942,Đức Phú,TP. Đà Nẵng,Trung bình,Trung bình
+2025-11-24 06:00:00,2320,Krông Á,Đắk Lắk,Trung bình,Trung bình
+2025-11-24 06:00:00,2259,Tây Sơn,Đắk Lắk,Trung bình,Trung bình
+2025-11-24 06:00:00,2260,Vân Hòa,Đắk Lắk,Trung bình,Trung bình
+2025-11-24 06:00:00,2250,Xuân Lãnh,Đắk Lắk,Trung bình,Trung bình
+2025-11-24 06:00:00,2245,Xuân Lộc,Đắk Lắk,Trung bình,Trung bình
