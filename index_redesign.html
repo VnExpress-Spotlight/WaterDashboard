@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cảnh báo Lũ & Hồ Chứa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JGB5XHREV0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JGB5XHREV0');
+</script>
+
+  <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #f8fafc;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Lexend', sans-serif;
+        font-weight: 700;
+      }
+
+      /* Alert pulse animation */
+      @keyframes pulse-alert {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .alert-pulse {
+        animation: pulse-alert 2s ease-in-out infinite;
+      }
+
+      /* Smooth section reveal */
+      .section-enter {
+        animation: slideUp 0.5s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Custom scrollbar */
+      .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+      .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+      .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 99px; }
+
+      /* Province grid */
+      .province-btn {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .province-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .province-btn.active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+      }
+
+      /* Alert card styles */
+      .alert-card {
+        border-left: 4px solid;
+        transition: all 0.2s;
+      }
+
+      .alert-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Collapsible sections */
+      .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .collapsible-content.open {
+        max-height: 5000px;
+      }
+
+      /* Map container */
+      #map {
+        height: 500px;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        #map { height: 350px; }
+      }
+
+      /* Status indicators */
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      /* Custom popup */
+      .custom-popup .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+      }
+      .custom-popup .leaflet-popup-content {
+        margin: 0;
+      }
+
+      /* Lake icon */
+      .lake-icon div {
+        box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.2), 0 1px 2px rgba(15, 23, 42, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Tab navigation */
+      .tab-btn {
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: currentColor;
+        border-radius: 3px 3px 0 0;
+      }
+
+      /* Gradient backgrounds */
+      .bg-gradient-danger {
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      }
+
+      .bg-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      }
+
+      .bg-gradient-info {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+      }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+            <svg class="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg md:text-2xl font-extrabold text-slate-900">Giám sát Lũ & Hồ</h1>
+            <p class="text-xs md:text-sm text-slate-500">Cảnh báo thời gian thực</p>
+          </div>
+        </div>
+        <a href="https://vnexpress.net" class="shrink-0" target="_blank" rel="noopener noreferrer">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/VnExpress.net_Logo.svg" alt="VnExpress" class="h-5 md:h-7 w-auto opacity-80 hover:opacity-100 transition">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-4 md:py-6 space-y-4 md:space-y-6">
+
+    <!-- Status Bar -->
+    <div class="bg-white rounded-xl shadow-sm p-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xs text-slate-500">Cập nhật mới nhất</span>
+            <span id="live-time" class="text-sm md:text-base font-bold text-slate-900">Đang tải...</span>
+          </div>
+        </div>
+        <button onclick="App.refreshData()" class="text-blue-600 hover:text-blue-700 font-medium text-sm md:text-base flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Làm mới
+        </button>
+      </div>
+    </div>
+
+    <!-- Warnings Detail -->
+    <section class="section-enter">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xl md:text-2xl font-bold text-slate-900">Chi tiết cảnh báo</h2>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="bg-white rounded-xl shadow-sm p-4 mb-4">
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="text-sm font-medium text-slate-600">Lọc theo:</span>
+          <button onclick="UI.setFilterMode('all')" class="filter-mode-btn active px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white transition" data-mode="all">
+            Tất cả
+          </button>
+          <button onclick="UI.setFilterMode('province')" class="filter-mode-btn px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-mode="province">
+            Tỉnh
+          </button>
+          <button onclick="UI.setFilterMode('basin')" class="filter-mode-btn px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-mode="basin">
+            Lưu vực
+          </button>
+          <button onclick="UI.setFilterMode('location')" class="filter-mode-btn px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition" data-mode="location">
+            Vị trí của tôi
+          </button>
+        </div>
+
+        <!-- Province Dropdown -->
+        <div id="province-filter" class="hidden">
+          <label class="block text-sm font-medium text-slate-700 mb-2">Chọn tỉnh/thành phố:</label>
+          <select id="province-select" onchange="UI.selectProvince(this.value)" class="w-full md:w-auto px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">-- Chọn tỉnh --</option>
+          </select>
+        </div>
+
+        <!-- Basin Dropdown -->
+        <div id="basin-filter" class="hidden">
+          <label class="block text-sm font-medium text-slate-700 mb-2">Chọn lưu vực:</label>
+          <select id="basin-select" onchange="UI.selectBasin(this.value)" class="w-full md:w-auto px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">-- Chọn lưu vực --</option>
+          </select>
+        </div>
+
+        <!-- Location Filter -->
+        <div id="location-filter" class="hidden">
+          <div class="space-y-4">
+            <div>
+              <button id="get-location-btn" onclick="UI.getCurrentLocation()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition">
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                Lấy vị trí hiện tại
+              </button>
+              <span id="location-status" class="ml-3 text-sm text-slate-600"></span>
+            </div>
+            <div id="distance-slider-container" class="hidden">
+              <label class="block text-sm font-medium text-slate-700 mb-2">
+                Bán kính tìm kiếm: <span id="radius-value" class="font-bold text-blue-600">50</span> km
+              </label>
+              <input type="range" id="radius-slider" min="5" max="200" value="50" step="5" onchange="UI.updateRadius(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>5 km</span>
+                <span>200 km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Filter Display -->
+        <div id="active-filter" class="mt-3 pt-3 border-t border-slate-200 hidden">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-sm">
+              <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-slate-600">Đang lọc: <span id="filter-label" class="font-bold text-slate-900"></span></span>
+            </div>
+            <button onclick="UI.clearFilter()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              Xóa bộ lọc
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Statistics -->
+      <div id="warnings-overview" class="bg-white rounded-xl shadow-sm p-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- River Stations -->
+          <div id="river-stats" class="text-center p-3 bg-blue-50 rounded-lg">
+            <div class="text-2xl md:text-3xl font-bold text-blue-600">0</div>
+            <div class="text-sm text-slate-600 mt-1">Trạm sông trên Báo động 2</div>
+            <div id="river-breakdown" class="text-xs text-slate-500 mt-2">
+              <!-- BD breakdown will be populated -->
+            </div>
+          </div>
+
+          <!-- Lake Stations -->
+          <div id="lake-stats" class="text-center p-3 bg-orange-50 rounded-lg">
+            <div class="text-2xl md:text-3xl font-bold text-orange-600">0</div>
+            <div class="text-sm text-slate-600 mt-1">Hồ đầy trên 100%</div>
+            <div id="lake-breakdown" class="text-xs text-slate-500 mt-2">
+              <!-- Capacity breakdown will be populated -->
+            </div>
+          </div>
+
+          <!-- Landslide Warnings -->
+          <div id="landslide-stats" class="text-center p-3 bg-purple-50 rounded-lg">
+            <div class="text-2xl md:text-3xl font-bold text-purple-600">0</div>
+            <div class="text-sm text-slate-600 mt-1">Khu vực nguy cơ sạt lở/lũ quét</div>
+            <div id="landslide-breakdown" class="text-xs text-slate-500 mt-2">
+              <!-- Risk breakdown will be populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- See More Button -->
+        <button onclick="UI.toggleWarningsDetail()" class="w-full mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg text-sm transition flex items-center justify-center gap-2">
+          <span id="toggle-text">Xem chi tiết</span>
+          <svg id="toggle-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Detailed Warnings List (Collapsible) -->
+      <div id="warnings-detail" class="hidden space-y-4">
+        <!-- Detail Filters -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Geographic Filter -->
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Khu vực:</label>
+              <select id="detail-geo-filter" onchange="UI.setDetailGeoFilter(this.value)" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">Tất cả</option>
+                <option value="province">Theo tỉnh</option>
+                <option value="basin">Theo lưu vực</option>
+                <option value="location">Vị trí của tôi</option>
+              </select>
+            </div>
+
+            <!-- Type Filter -->
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Loại:</label>
+              <select id="detail-type-filter" onchange="UI.setDetailFilter(this.value)" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">Tất cả</option>
+                <option value="river">Trạm sông</option>
+                <option value="lake">Hồ chứa</option>
+                <option value="landslide">Sạt lở/Lũ quét</option>
+              </select>
+            </div>
+
+            <!-- Warning Level Filter -->
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Mức cảnh báo:</label>
+              <select id="detail-warning-filter" onchange="UI.setWarningLevelFilter(this.value)" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">Tất cả</option>
+                <option value="high">Cao</option>
+                <option value="medium">Trung bình</option>
+                <option value="low">Thấp</option>
+                <option value="none">Không cảnh báo</option>
+              </select>
+            </div>
+
+            <!-- Sort Order -->
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Sắp xếp:</label>
+              <select id="detail-sort-filter" onchange="UI.setDetailSort(this.value)" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="severity">Mức cảnh báo (cao → thấp)</option>
+                <option value="name">Tên (A → Z)</option>
+                <option value="province">Tỉnh (A → Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Geographic Sub-filters (shown based on selection) -->
+          <div id="detail-geo-options" class="mt-4 pt-4 border-t border-slate-200 hidden">
+            <!-- Province Dropdown -->
+            <div id="detail-province-filter" class="hidden">
+              <label class="block text-sm font-medium text-slate-700 mb-2">Chọn tỉnh/thành phố:</label>
+              <select id="detail-province-select" onchange="UI.setDetailProvince(this.value)" class="w-full md:w-auto px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Chọn tỉnh --</option>
+              </select>
+            </div>
+
+            <!-- Basin Dropdown -->
+            <div id="detail-basin-filter" class="hidden">
+              <label class="block text-sm font-medium text-slate-700 mb-2">Chọn lưu vực:</label>
+              <select id="detail-basin-select" onchange="UI.setDetailBasin(this.value)" class="w-full md:w-auto px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Chọn lưu vực --</option>
+              </select>
+            </div>
+
+            <!-- Location Filter -->
+            <div id="detail-location-filter" class="hidden">
+              <div class="space-y-4">
+                <div>
+                  <button id="detail-get-location-btn" onclick="UI.getDetailLocation()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition">
+                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                    Lấy vị trí hiện tại
+                  </button>
+                  <span id="detail-location-status" class="ml-3 text-sm text-slate-600"></span>
+                </div>
+                <div id="detail-distance-slider-container" class="hidden">
+                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Bán kính tìm kiếm: <span id="detail-radius-value" class="font-bold text-blue-600">50</span> km
+                  </label>
+                  <input type="range" id="detail-radius-slider" min="5" max="200" value="50" step="5" onchange="UI.updateDetailRadius(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                  <div class="flex justify-between text-xs text-slate-500 mt-1">
+                    <span>5 km</span>
+                    <span>200 km</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warnings Cards List -->
+        <div id="warnings-list" class="space-y-2 md:space-y-3">
+          <!-- Warning cards populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section (Collapsible) -->
+    <section class="section-enter" style="animation-delay: 0.4s">
+      <button onclick="UI.toggleMap()" class="w-full bg-white rounded-xl shadow-sm p-4 flex items-center justify-between hover:bg-slate-50 transition">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg md:text-xl font-bold text-slate-900">Bản đồ tương tác</h2>
+            <p class="text-xs md:text-sm text-slate-500">Nhấn để xem bản đồ chi tiết</p>
+          </div>
+        </div>
+        <svg id="map-chevron" class="w-6 h-6 text-slate-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <div id="map-container" class="collapsible-content mt-4">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <!-- Search -->
+          <div class="mb-4 relative">
+            <input type="text" id="search-input" placeholder="Tìm kiếm địa điểm..."
+                   class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                   onfocus="Search.showSuggestions()"
+                   onblur="setTimeout(Search.hideSuggestions, 200)"
+                   onkeyup="Search.handleInput()">
+            <svg class="absolute left-3 top-3.5 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <div id="search-suggestions" class="absolute mt-1 w-full bg-white rounded-lg shadow-lg overflow-hidden hidden max-h-60 overflow-y-auto custom-scroll z-10">
+              <ul id="suggestions-list"></ul>
+            </div>
+          </div>
+
+          <!-- Layer Control -->
+          <div class="mb-4 flex justify-end gap-2">
+            <button data-layer="risk" onclick="App.switchLayer('risk')" class="layer-btn flex flex-col items-center justify-center gap-1 p-2 text-xs font-semibold rounded-lg text-center hover:bg-slate-100 text-slate-600 border-2 border-transparent transition-all">
+              <img src="icons/Flood.png" alt="Lũ quét icon" class="w-10 h-10 rounded">
+              <span class="text-[10px] leading-tight">Lũ quét, Sạt lở</span>
+            </button>
+            <button data-layer="river_lake" onclick="App.switchLayer('river_lake')" class="layer-btn flex flex-col items-center justify-center gap-1 p-2 text-xs font-semibold rounded-lg text-center hover:bg-slate-100 text-slate-600 border-2 border-transparent transition-all">
+              <img src="icons/Lake.png" alt="Sông & Hồ icon" class="w-10 h-10 rounded">
+              <span class="text-[10px] leading-tight">Sông & Hồ</span>
+            </button>
+            <button data-layer="all" onclick="App.switchLayer('all')" class="layer-btn active flex flex-col items-center justify-center gap-1 p-2 text-xs font-semibold rounded-lg text-center text-slate-600 border-2 border-blue-600 bg-blue-50 transition-all">
+              <img src="icons/All.png" alt="Tất cả icon" class="w-10 h-10 rounded">
+              <span class="text-[10px] leading-tight">Tất cả</span>
+            </button>
+          </div>
+
+          <!-- Map -->
+          <div id="map" class="mb-4"></div>
+
+          <!-- Legend -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div>
+              <h4 class="font-bold mb-2 text-slate-700">Hồ chứa</h4>
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#7e22ce" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg>
+                  <span class="text-slate-600">&gt;105% dung tích</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg>
+                  <span class="text-slate-600">&gt;100% dung tích</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#f97316" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg>
+                  <span class="text-slate-600">≥95% dung tích</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#eab308" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg>
+                  <span class="text-slate-600">≥90% dung tích</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0ea5e9" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"></path></svg>
+                  <span class="text-slate-600">&lt;90% dung tích</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-bold mb-2 text-slate-700">Trạm sông</h4>
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 rounded-full bg-purple-700"></div>
+                  <span class="text-slate-600">Trên lũ lịch sử</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                  <span class="text-slate-600">Trên BĐ3</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 rounded-full bg-orange-500"></div>
+                  <span class="text-slate-600">Trên BĐ2</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                  <span class="text-slate-600">Trên BĐ1</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 rounded-full bg-sky-500"></div>
+                  <span class="text-slate-600">Dưới BĐ1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detail View (Modal) -->
+    <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[1000] hidden items-center justify-center p-4" onclick="App.hideDetailView(event)">
+      <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col" onclick="event.stopPropagation()">
+        <div class="p-4 md:p-6 border-b border-slate-200 flex items-center justify-between">
+          <div>
+            <h3 id="detail-title" class="text-xl md:text-2xl font-bold text-slate-900"></h3>
+            <p id="detail-subtitle" class="text-sm md:text-base text-slate-500 mt-1"></p>
+          </div>
+          <button onclick="App.hideDetailView()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition">
+            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div id="detail-chart-container" class="flex-1 overflow-y-auto p-4 md:p-6"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-8">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-center text-xs md:text-sm text-slate-500">
+      <p class="mb-2">Nguồn dữ liệu: Viện Khoa học Thuỷ lợi Việt Nam • Cục Khí tượng Thuỷ văn • VNDMS</p>
+      <p>Bản đồ nền: Google Satellite & VNDMS</p>
+    </div>
+  </footer>
+
+  <script>
+  /**
+   * CONFIGURATION
+   */
+  const CONFIG = {
+    URLS: {
+      RIVER_GEO: 'geo/river.json',
+      BOUNDARY: 'geo/ProvincialBoundary.json',
+      DATA_CSV: 'data/water_data_full_combined.csv',
+      LANDSLIDE_CSV: 'data/landslide.csv',
+      WARD_BOUNDARY: 'geo/WardBoundary.geojson'
+    },
+    COLORS: ['#3b82f6', '#22c55e', '#f97316', '#a855f7', '#ec4899', '#0ea5e9', '#f59e0b', '#10b981'],
+    DOWNSAMPLE: 240
+  };
+
+  const State = {
+    allRecords: [],
+    latestRecords: [],
+    basins: [],
+    landslideRecords: {},
+    activeBasin: '__ALL__',
+    activeProvince: null,
+    activeFilter: 'all',
+    activeLayer: 'all', // 'all', 'river_lake', 'risk'
+    filterMode: 'all', // 'all', 'province', 'basin', or 'location'
+    detailFilter: 'all', // 'all', 'river', 'lake', 'landslide'
+    warningLevelFilter: 'all', // 'all', 'high', 'medium', 'low', 'none'
+    detailGeoFilter: 'all',
+    detailActiveProvince: null,
+    detailActiveBasin: '__ALL__',
+    locationRadius: 50, // km
+    userLocation: null,
+    geoJSON: null,
+    provinces: [],
+    provinceList: [],
+    provinceBoundary: null,
+    wardBoundary: null,
+    chartInstances: [],
+    stationHistory: {},
+    mapOpen: false,
+    warningsDetailOpen: false
+  };
+
+  const formatDecimal = (num, precision = 2) => {
+    if (num === null || num === undefined || isNaN(num)) return '-';
+    return parseFloat(num).toFixed(precision).replace('.', ',');
+  };
+
+  /**
+   * MODULE: DATA
+   */
+  const Data = {
+    async init() {
+      try {
+        const [geo, csv, boundary, landslideCsv, wardBoundary] = await Promise.all([
+          fetch(CONFIG.URLS.RIVER_GEO).then(r => r.json()),
+          fetch(CONFIG.URLS.DATA_CSV).then(r => r.text()),
+          fetch(CONFIG.URLS.BOUNDARY).then(r => r.json()).catch(() => null),
+          fetch(CONFIG.URLS.LANDSLIDE_CSV).then(r => r.text()).catch(() => ''),
+          fetch(CONFIG.URLS.WARD_BOUNDARY).then(r => r.json()).catch(() => null)
+        ]);
+
+        State.geoJSON = geo;
+        State.provinces = boundary ? boundary.features : [];
+        State.provinceBoundary = boundary; // Store for map initialization
+        State.wardBoundary = wardBoundary; // Store for location filtering
+        this.processCSV(csv);
+        this.processLandslideCSV(landslideCsv);
+        this.analyzeBasins();
+
+        UI.init();
+        UI.updateLiveTime(); // Ensure time is updated after data loads
+        App.updateView();
+      } catch (e) {
+        console.error('Error loading data:', e);
+      }
+    },
+
+    processCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return;
+      const headers = this.parseCSVLine(lines[0]).map(h => h.trim());
+      const data = [];
+      for(let i=1; i<lines.length; i++) {
+        if(!lines[i].trim()) continue;
+        const vals = this.parseCSVLine(lines[i]);
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = vals[idx]?.trim());
+        data.push(this.transformRecord(obj));
+      }
+      data.sort((a,b) => a.ts - b.ts);
+      State.allRecords = data;
+
+      const latestMap = {};
+      data.forEach(r => { if(r.code) latestMap[r.code] = r; });
+      State.latestRecords = Object.values(latestMap);
+    },
+
+    parseCSVLine(text) {
+      const res = []; let cur = '', inQ = false;
+      for(let i=0; i<text.length; i++) {
+        const c = text[i];
+        if(c === '"') inQ = !inQ;
+        else if(c === ',' && !inQ) { res.push(cur); cur = ''; }
+        else cur += c;
+      }
+      res.push(cur);
+      return res;
+    },
+
+    transformRecord(r) {
+      const parseVnDate = (dateString) => {
+        if (!dateString) return 0;
+        const parts = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2})/);
+        if (!parts) return Date.parse(dateString);
+        return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]).getTime();
+      };
+
+      const num = (v) => v && v !== '' ? parseFloat(v.replace(',', '.')) : null;
+      return {
+        code: r['Mã trạm/LakeCode'],
+        name: r['Trạm/Hồ'],
+        basin: r['Tên sông/Lưu vực'],
+        alertTrend: r['Cảnh báo/Xu thế'],
+        province: r['Tên tỉnh'] || '',
+        type: (r['type'] || 'river').toLowerCase(),
+        timeStr: r['Thời gian (UTC)'],
+        ts: parseVnDate(r['Thời gian (UTC)']),
+        water: num(r['Mực nước (m)']),
+        alert: num(r['Cảnh báo value (0-4)']) || 0,
+        storage: num(r['Dung tích (m3)']),
+        percent: num(r['Tỷ lệ dung tích (%)']),
+        designStorage: num(r['Dung tích TK (m3)']),
+        qIn: num(r['Q đến (m3/s)']),
+        qOut: num(r['Q xả (m3/s)']),
+        bd1: num(r['BĐ1 (m)']),
+        bd2: num(r['BĐ2 (m)']),
+        bd3: num(r['BĐ3 (m)']),
+        lat: num(r['y']),
+        lng: num(r['x']),
+        historicalLevel: num(r['Mực nước lịch sử (m)']),
+        historicalYear: r['Năm lũ lịch sử'],
+      };
+    },
+
+    analyzeBasins() {
+      const basinMap = {};
+      const provinceSet = new Set();
+
+      State.latestRecords.forEach(r => {
+        if (r.basin && r.province) {
+          if (!basinMap[r.basin]) {
+            basinMap[r.basin] = new Set();
+          }
+          const cleanProvince = r.province.replace('tỉnh ', '').replace('thành phố ', '');
+          basinMap[r.basin].add(cleanProvince);
+          provinceSet.add(cleanProvince);
+        }
+      });
+
+      State.basins = Object.keys(basinMap).sort().map(basinName => ({
+        name: basinName,
+        provinces: Array.from(basinMap[basinName]).sort()
+      }));
+
+      State.provinceList = Array.from(provinceSet).sort();
+    },
+
+    processLandslideCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return;
+      const headers = this.parseCSVLine(lines[0]).map(h => h.trim());
+      const records = {};
+      for(let i=1; i<lines.length; i++) {
+        if(!lines[i].trim()) continue;
+        const vals = this.parseCSVLine(lines[i]);
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = vals[idx]?.trim());
+        records[obj.commune_name_2cap] = obj;
+      }
+      State.landslideRecords = records;
+    },
+
+    getFilteredRecords() {
+      let records = State.latestRecords;
+
+      // Filter based on mode
+      if (State.filterMode === 'province' && State.activeProvince) {
+        records = records.filter(r => {
+          const cleanProvince = r.province.replace('tỉnh ', '').replace('thành phố ', '');
+          return cleanProvince === State.activeProvince;
+        });
+      } else if (State.filterMode === 'basin' && State.activeBasin !== '__ALL__') {
+        records = records.filter(r => r.basin === State.activeBasin);
+      } else if (State.filterMode === 'location' && State.userLocation) {
+        // Calculate distance for each record
+        const calculateDistance = (lat1, lon1, lat2, lon2) => {
+          const R = 6371; // km
+          const dLat = (lat2 - lat1) * Math.PI / 180;
+          const dLon = (lon2 - lon1) * Math.PI / 180;
+          const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          return R * c;
+        };
+
+        records = records.filter(r => {
+          if (!r.lat || !r.lng) return false;
+          const distance = calculateDistance(State.userLocation.lat, State.userLocation.lng, r.lat, r.lng);
+          return distance <= State.locationRadius;
+        });
+      }
+
+      return records;
+    },
+
+    getUserWard() {
+      // Find which ward the user is in using point-in-polygon
+      if (!State.userLocation || !State.wardBoundary) return null;
+
+      const point = [State.userLocation.lng, State.userLocation.lat]; // GeoJSON is [lng, lat]
+
+      for (const feature of State.wardBoundary.features) {
+        if (this.pointInPolygon(point, feature.geometry)) {
+          return feature.properties;
+        }
+      }
+
+      return null;
+    },
+
+    pointInPolygon(point, geometry) {
+      // Simple point-in-polygon check for MultiPolygon and Polygon
+      if (geometry.type === 'Polygon') {
+        return this.isPointInPolygon(point, geometry.coordinates[0]);
+      } else if (geometry.type === 'MultiPolygon') {
+        for (const polygon of geometry.coordinates) {
+          if (this.isPointInPolygon(point, polygon[0])) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+
+    isPointInPolygon(point, polygon) {
+      // Ray casting algorithm
+      const x = point[0], y = point[1];
+      let inside = false;
+
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i][0], yi = polygon[i][1];
+        const xj = polygon[j][0], yj = polygon[j][1];
+
+        const intersect = ((yi > y) !== (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+
+      return inside;
+    },
+
+    downsample(dataArray, key) {
+      if (dataArray.length <= CONFIG.DOWNSAMPLE) return dataArray.map(d => d[key]);
+      const step = Math.ceil(dataArray.length / CONFIG.DOWNSAMPLE);
+      const filtered = dataArray.filter((_, i) => i % step === 0);
+      if (dataArray.length > 0 && filtered[filtered.length-1] !== dataArray[dataArray.length-1]) {
+        filtered.push(dataArray[dataArray.length-1]);
+      }
+      return filtered.map(d => d[key]);
+    }
+  };
+
+  /**
+   * MODULE: MAP MANAGER
+   */
+  const MapManager = {
+    instance: null,
+    layers: { river: null, station: null, highlight: null, landslide: null, landslideGeoJSON: null },
+
+    init() {
+      this.instance = L.map('map', {
+        center: [14, 108.5],
+        zoom: 6,
+        preferCanvas: true,
+        zoomControl: true,
+        attributionControl: false
+      });
+
+      this.instance.createPane('labelPane');
+      this.instance.getPane('labelPane').style.zIndex = 350;
+      this.instance.createPane('boundaryPane');
+      this.instance.getPane('boundaryPane').style.zIndex = 410;
+      this.instance.createPane('riskPane');
+      this.instance.getPane('riskPane').style.zIndex = 415;
+      this.instance.createPane('riverPane');
+      this.instance.getPane('riverPane').style.zIndex = 420;
+      this.instance.createPane('stationPane');
+      this.instance.getPane('stationPane').style.zIndex = 430;
+
+      this.layers.landslide = L.layerGroup();
+      this.layers.highlight = L.layerGroup().addTo(this.instance);
+
+      this.instance.on('locationfound', this.onLocationFound.bind(this));
+      this.instance.on('locationerror', this.onLocationError.bind(this));
+
+      L.tileLayer('https://mt0.google.com/vt/lyrs=s&hl=vi&x={x}&y={y}&z={z}', {
+        zIndex: 1,
+        keepBuffer: 10,
+        updateWhenIdle: false
+      }).addTo(this.instance);
+
+      L.tileLayer('https://vndms.dmptc.gov.vn/VNDark/{z}/{x}/{y}.png', {
+        opacity: 0.5,
+        pane: 'labelPane'
+      }).addTo(this.instance);
+
+      this.layers.river = L.layerGroup().addTo(this.instance);
+      this.layers.station = L.layerGroup().addTo(this.instance);
+      this.layers.landslide.addTo(this.instance);
+
+      // Add province boundaries if available
+      if (State.provinceBoundary) {
+        this.addBoundary(State.provinceBoundary);
+      }
+
+      // Add landslide risk layer if available
+      if (State.wardBoundary) {
+        this.renderLandslideRisk(State.wardBoundary);
+      }
+    },
+
+    renderLandslideRisk(wardBoundary) {
+      this.layers.landslide.clearLayers();
+
+      const featuresWithRisk = wardBoundary.features.filter(feature =>
+        State.landslideRecords[feature.properties['Phường xã mới']]
+      );
+
+      this.layers.landslideGeoJSON = L.geoJSON({ type: 'FeatureCollection', features: featuresWithRisk }, {
+        style: this.styleLandslideArea,
+        interactive: false,
+        pane: 'riskPane'
+      });
+      this.layers.landslide.addLayer(this.layers.landslideGeoJSON);
+    },
+
+    styleLandslideArea(feature) {
+      const communeName = feature.properties['Phường xã mới'];
+      const riskData = State.landslideRecords[communeName];
+      let color = 'transparent';
+      if (riskData) {
+        const riskLevel = riskData.nguycosatlo;
+        if (riskLevel === 'Rất cao') color = '#8a2be2';
+        else if (riskLevel === 'Cao') color = '#cf3f3c';
+        else if (riskLevel === 'Trung bình') color = '#ffd21f';
+      }
+
+      return {
+        fillColor: color,
+        fillOpacity: 0.5,
+        weight: 1,
+        color: '#ffffff',
+        opacity: 0.3
+      };
+    },
+
+    updateLayerVisibility() {
+      if (!this.instance) return;
+
+      const layerState = State.activeLayer;
+      const layers = this.layers;
+
+      // Helper to add/remove layer from map
+      const setLayer = (layer, visible) => {
+        if (visible && !this.instance.hasLayer(layer)) this.instance.addLayer(layer);
+        if (!visible && this.instance.hasLayer(layer)) this.instance.removeLayer(layer);
+      };
+
+      // Show/hide layers based on active layer mode
+      setLayer(layers.river, layerState === 'all' || layerState === 'river_lake');
+      setLayer(layers.station, layerState === 'all' || layerState === 'river_lake');
+      setLayer(layers.landslide, layerState === 'all' || layerState === 'risk');
+
+      // Re-apply styles to landslide layer to reflect any changes
+      if (this.layers.landslideGeoJSON) {
+        this.layers.landslideGeoJSON.setStyle(this.styleLandslideArea);
+      }
+    },
+
+    addBoundary(data) {
+      L.geoJSON(data, {
+        style: { color: '#ffffff', weight: 1, opacity: 0.6, fillOpacity: 0 },
+        interactive: false,
+        pane: 'boundaryPane'
+      }).addTo(this.instance);
+    },
+
+    update() {
+      this.layers.river.clearLayers();
+      this.layers.station.clearLayers();
+      this.layers.highlight.clearLayers();
+
+      const records = Data.getFilteredRecords();
+      const activeBasins = new Set(records.map(r => r.basin));
+
+      if (State.geoJSON) {
+        const features = State.geoJSON.features.filter(f => {
+          return State.activeBasin === '__ALL__' || (f.properties.Basin || f.properties.basin) === State.activeBasin;
+        });
+
+        if (features.length) {
+          const riverLayer = L.geoJSON(features, {
+            style: this.styleRiver,
+            pane: 'riverPane'
+          });
+          this.layers.river.addLayer(riverLayer);
+
+          if (State.activeBasin === '__ALL__' && !State.activeProvince) {
+            this.instance.flyTo([14, 108.5], 7, { duration: 1 });
+          } else {
+            this.instance.flyToBounds(riverLayer.getBounds(), { padding: [20, 20], duration: 1 });
+          }
+        }
+      }
+
+      records.forEach(r => {
+        if (!r.lat || !r.lng) return;
+        this.layers.station.addLayer(this.createMarker(r));
+      });
+    },
+
+    styleRiver(feature) {
+      const props = feature.properties || {};
+      const rawLevel = props.Level ?? props.level ?? 0;
+      const level = Number.isNaN(parseInt(rawLevel, 10)) ? 0 : parseInt(rawLevel, 10);
+
+      let weight, opacity;
+      switch (level) {
+        case 0: weight = 3.5; opacity = 1; break;
+        case 1: weight = 1.5; opacity = 0.8; break;
+        case 2: weight = 1; opacity = 0.7; break;
+        case 3: weight = 0.5; opacity = 0.6; break;
+        default: weight = 0.5; opacity = 0.6;
+      }
+
+      return { color: '#60a5fa', weight: weight, opacity: opacity };
+    },
+
+    createMarker(r) {
+      const isLake = r.type === 'lake';
+      const color = isLake ? null : this.getRiverColor(r);
+      const lakeColor = isLake ? this.getLakeColor(r.percent) : null;
+
+      let marker;
+      if (isLake) {
+        const html = `<svg width="24" height="24" viewBox="0 0 24 24" fill="${lakeColor}" stroke="white" stroke-width="2"><path d="M12 2L2 22h20L12 2z"/></svg>`;
+        marker = L.marker([r.lat, r.lng], {
+          icon: L.divIcon({ className: 'lake-icon', html, iconSize: [24, 24] })
+        });
+      } else {
+        marker = L.circleMarker([r.lat, r.lng], {
+          radius: r.alert > 0 ? 6 + (r.alert * 2) : 5,
+          fillColor: color,
+          color: '#fff',
+          weight: 1,
+          fillOpacity: 1,
+          pane: 'stationPane'
+        });
+      }
+
+      const popupTitle = `<div class="text-white p-3 rounded-t-lg" style="background-color: ${isLake ? lakeColor : color};">
+        <div class="font-bold text-base">${isLake ? 'Hồ' : 'Trạm'} ${r.name}</div>
+        <div class="font-normal text-white/80 text-xs leading-tight mt-1">Sông ${r.basin}, ${r.province}</div>
+      </div>`;
+
+      const riverInfo = `
+        <div class="text-slate-500">Mực nước:</div>
+        <div class="font-mono font-bold">${formatDecimal(r.water, 2)} m</div>
+        <div class="text-slate-500">Cảnh báo:</div>
+        <div class="font-bold" style="color:${color}">${r.alertTrend || `Mức ${r.alert}`}</div>
+      `;
+
+      const lakeInfo = `
+        <div class="text-slate-500">Dung tích:</div>
+        <div class="font-mono font-bold">${r.storage ? formatDecimal(r.storage, 2) : '-'} triệu m³</div>
+        <div class="text-slate-500">Tỷ lệ đầy:</div>
+        <div class="font-mono font-bold" style="color:${lakeColor}">${formatDecimal(r.percent, 2)}%</div>
+      `;
+
+      const date = new Date(r.ts);
+      const formattedTime = `Cập nhật: ${date.getHours()}h${String(date.getMinutes()).padStart(2, '0')}, ngày ${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+
+      const detailButton = `
+        <div class="col-span-2 mt-3 pt-3 border-t border-slate-100">
+          <button onclick="App.showDetailView('${r.code}')" class="w-full text-center bg-blue-50 hover:bg-blue-100 text-blue-600 text-sm font-semibold py-2 rounded-lg transition">
+            Xem chi tiết
+          </button>
+        </div>
+      `;
+
+      const popupContent = `
+        <div class="p-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
+          ${isLake ? lakeInfo : riverInfo}
+          <div class="col-span-2 text-xs text-slate-400 mt-1 text-right">${formattedTime}</div>
+          ${detailButton}
+        </div>
+      `;
+
+      const popup = `<div class="font-sans min-w-[250px]">${popupTitle}${popupContent}</div>`;
+      marker.bindPopup(popup, { className: 'custom-popup' });
+
+      marker.on('click', (e) => {
+        const m = e.target;
+        m.openPopup();
+        setTimeout(() => { if (m.isPopupOpen()) { m.openPopup(); } }, 100);
+      });
+
+      return marker;
+    },
+
+    getRiverColor(record) {
+      if (record && record.historicalLevel != null && record.water != null && record.water > record.historicalLevel) {
+        return '#7e22ce';
+      }
+      const alertVal = (record && record.alert) || 0;
+      if (alertVal >= 3) return '#ef4444';
+      if (alertVal >= 2) return '#f97316';
+      if (alertVal >= 1) return '#eab308';
+      return '#0ea5e9';
+    },
+
+    getLakeColor(percent) {
+      if (percent == null) return '#0ea5e9';
+      if (percent > 105) return '#7e22ce';
+      if (percent > 100) return '#ef4444';
+      if (percent >= 95) return '#f97316';
+      if (percent >= 90) return '#eab308';
+      return '#0ea5e9';
+    },
+
+    onLocationFound(e) {
+      this.layers.highlight.clearLayers();
+      const radius = e.accuracy;
+
+      L.circle(e.latlng, radius, {
+        color: '#2563eb',
+        fillColor: '#60a5fa',
+        fillOpacity: 0.2,
+        weight: 1
+      }).addTo(this.layers.highlight);
+
+      L.circleMarker(e.latlng, {
+        radius: 8,
+        color: '#fff',
+        weight: 2,
+        fillColor: '#2563eb',
+        fillOpacity: 1
+      }).addTo(this.layers.highlight);
+    },
+
+    onLocationError(e) {
+      alert("Không thể tìm thấy vị trí của bạn. Vui lòng kiểm tra cài đặt trình duyệt.");
+    }
+  };
+
+  /**
+   * MODULE: UI
+   */
+  const UI = {
+    init() {
+      this.updateLiveTime();
+      this.populateFilterDropdowns();
+      this.renderOverview();
+      this.renderWarningsList();
+    },
+
+    populateFilterDropdowns() {
+      // Populate province dropdown
+      const provinceSelect = document.getElementById('province-select');
+      provinceSelect.innerHTML = '<option value="">-- Chọn tỉnh --</option>';
+      State.provinceList.forEach(province => {
+        const option = document.createElement('option');
+        option.value = province;
+        option.textContent = province;
+        provinceSelect.appendChild(option);
+      });
+
+      // Populate basin dropdown
+      const basinSelect = document.getElementById('basin-select');
+      basinSelect.innerHTML = '<option value="">-- Chọn lưu vực --</option>';
+      State.basins.forEach(basin => {
+        const option = document.createElement('option');
+        option.value = basin.name;
+        option.textContent = `${basin.name} (${basin.provinces.join(', ')})`;
+        basinSelect.appendChild(option);
+      });
+    },
+
+    updateLiveTime() {
+      if (!State.latestRecords.length) return;
+      const latest = State.latestRecords.reduce((a, b) => (a.ts > b.ts ? a : b));
+      const date = new Date(latest.ts);
+
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const formattedTime = `${hours}:${minutes}, ${day}/${month}/${year}`;
+      document.getElementById('live-time').textContent = formattedTime;
+    },
+
+    renderOverview() {
+      const records = Data.getFilteredRecords();
+
+      // Count river stations by alert level
+      const rivers = records.filter(r => r.type === 'river');
+      const bd2Count = rivers.filter(r => r.alert >= 2).length;
+      const bd3Count = rivers.filter(r => r.alert >= 3).length;
+      const historicalCount = rivers.filter(r => r.historicalLevel && r.water > r.historicalLevel).length;
+
+      // Count lakes above 100%
+      const lakes = records.filter(r => r.type === 'lake' && r.percent > 100);
+      const lakes100to105 = lakes.filter(r => r.percent <= 105).length;
+      const lakesAbove105 = lakes.filter(r => r.percent > 105).length;
+
+      // Count landslide areas
+      let landslideAreas = [];
+      if (State.filterMode === 'location' && State.userLocation) {
+        // Only show user's ward in location mode
+        const wardInfo = Data.getUserWard();
+        if (wardInfo && wardInfo.NAME_2) {
+          const wardData = State.landslideRecords[wardInfo.NAME_2];
+          if (wardData && (wardData.nguycosatlo === 'Cao' || wardData.nguycosatlo === 'Rất cao' ||
+                           wardData.nguycoluquet === 'Cao' || wardData.nguycoluquet === 'Rất cao')) {
+            landslideAreas = [wardData];
+          }
+        }
+      } else {
+        // Show all areas for other modes
+        landslideAreas = Object.values(State.landslideRecords).filter(r =>
+          r.nguycosatlo === 'Rất cao' || r.nguycosatlo === 'Cao' ||
+          r.nguycoluquet === 'Rất cao' || r.nguycoluquet === 'Cao'
+        );
+      }
+
+      const highRiskCount = landslideAreas.filter(r =>
+        r.nguycosatlo === 'Rất cao' || r.nguycoluquet === 'Rất cao'
+      ).length;
+      const moderateRiskCount = landslideAreas.length - highRiskCount;
+
+      // Update River Stats
+      document.querySelector('#river-stats .text-2xl').textContent = bd2Count;
+      document.getElementById('river-breakdown').innerHTML = `
+        ${historicalCount > 0 ? `Trên lũ lịch sử: <strong>${historicalCount}</strong> • ` : ''}
+        Trên BĐ3: <strong>${bd3Count}</strong> • Trên BĐ2: <strong>${bd2Count}</strong>
+      `;
+
+      // Update Lake Stats
+      document.querySelector('#lake-stats .text-2xl').textContent = lakes.length;
+      document.getElementById('lake-breakdown').innerHTML = `
+        ${lakesAbove105 > 0 ? `Trên 105%: <strong>${lakesAbove105}</strong> • ` : ''}
+        ${lakes100to105 > 0 ? `100-105%: <strong>${lakes100to105}</strong>` : ''}
+      `;
+
+      // Update Landslide Stats
+      document.querySelector('#landslide-stats .text-2xl').textContent = landslideAreas.length;
+      document.getElementById('landslide-breakdown').innerHTML = `
+        ${highRiskCount > 0 ? `Rất cao: <strong>${highRiskCount}</strong> • ` : ''}
+        ${moderateRiskCount > 0 ? `Cao: <strong>${moderateRiskCount}</strong>` : ''}
+      `;
+    },
+
+    toggleWarningsDetail() {
+      State.warningsDetailOpen = !State.warningsDetailOpen;
+      const detail = document.getElementById('warnings-detail');
+      const toggleText = document.getElementById('toggle-text');
+      const toggleIcon = document.getElementById('toggle-icon');
+
+      if (State.warningsDetailOpen) {
+        detail.classList.remove('hidden');
+        toggleText.textContent = 'Ẩn chi tiết';
+        toggleIcon.style.transform = 'rotate(180deg)';
+      } else {
+        detail.classList.add('hidden');
+        toggleText.textContent = 'Xem chi tiết';
+        toggleIcon.style.transform = 'rotate(0deg)';
+      }
+    },
+
+    setDetailFilter(filter) {
+      State.detailFilter = filter;
+
+      // Update button states
+      document.querySelectorAll('.detail-filter-btn').forEach(btn => {
+        if (btn.dataset.filter === filter) {
+          btn.classList.remove('bg-slate-100', 'text-slate-700');
+          btn.classList.add('bg-blue-600', 'text-white', 'active');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'active');
+          btn.classList.add('bg-slate-100', 'text-slate-700');
+        }
+      });
+
+      this.renderWarningsList();
+    },
+
+    setWarningLevelFilter(level) {
+      State.warningLevelFilter = level;
+
+      // Update button states
+      document.querySelectorAll('.warning-level-btn').forEach(btn => {
+        if (btn.dataset.level === level) {
+          btn.classList.remove('bg-slate-100', 'text-slate-700');
+          btn.classList.add('bg-blue-600', 'text-white', 'active');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'active');
+          btn.classList.add('bg-slate-100', 'text-slate-700');
+        }
+      });
+
+      this.renderWarningsList();
+    },
+
+    setFilterMode(mode) {
+      State.filterMode = mode;
+
+      // Update button states
+      document.querySelectorAll('.filter-mode-btn').forEach(btn => {
+        if (btn.dataset.mode === mode) {
+          btn.classList.remove('bg-slate-100', 'text-slate-700');
+          btn.classList.add('bg-blue-600', 'text-white', 'active');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'active');
+          btn.classList.add('bg-slate-100', 'text-slate-700');
+        }
+      });
+
+      // Show/hide filter controls
+      document.getElementById('province-filter').classList.toggle('hidden', mode !== 'province');
+      document.getElementById('basin-filter').classList.toggle('hidden', mode !== 'basin');
+      document.getElementById('location-filter').classList.toggle('hidden', mode !== 'location');
+
+      // Reset selections if changing mode
+      if (mode === 'all') {
+        State.activeProvince = null;
+        State.activeBasin = '__ALL__';
+        State.userLocation = null;
+        document.getElementById('active-filter').classList.add('hidden');
+        this.renderOverview();
+        this.renderWarningsList();
+      }
+    },
+
+    selectProvince(province) {
+      State.activeProvince = province || null;
+      this.updateFilterLabel();
+      this.renderOverview();
+      this.renderWarningsList();
+    },
+
+    selectBasin(basin) {
+      State.activeBasin = basin || '__ALL__';
+      this.updateFilterLabel();
+      this.renderOverview();
+      this.renderWarningsList();
+    },
+
+    getCurrentLocation() {
+      if (!navigator.geolocation) {
+        alert('Trình duyệt của bạn không hỗ trợ định vị');
+        return;
+      }
+
+      const btn = document.getElementById('get-location-btn');
+      const status = document.getElementById('location-status');
+
+      btn.disabled = true;
+      status.textContent = 'Đang xác định vị trí...';
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          State.userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          btn.disabled = false;
+          status.textContent = `✓ Đã lấy vị trí (${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)})`;
+
+          document.getElementById('distance-slider-container').classList.remove('hidden');
+          this.updateFilterLabel();
+          this.renderOverview();
+          this.renderWarningsList();
+
+          // Show on map
+          if (MapManager.instance && !State.mapOpen) {
+            UI.toggleMap();
+          }
+          setTimeout(() => {
+            if (MapManager.instance) {
+              MapManager.instance.setView([State.userLocation.lat, State.userLocation.lng], 10);
+              MapManager.layers.highlight.clearLayers();
+
+              L.circleMarker([State.userLocation.lat, State.userLocation.lng], {
+                radius: 10,
+                color: '#fff',
+                weight: 3,
+                fillColor: '#3b82f6',
+                fillOpacity: 1
+              }).addTo(MapManager.layers.highlight);
+            }
+          }, 500);
+        },
+        (error) => {
+          btn.disabled = false;
+          status.textContent = '✗ Không thể lấy vị trí';
+          alert('Không thể xác định vị trí của bạn. Vui lòng cho phép truy cập vị trí.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    },
+
+    updateRadius(value) {
+      State.locationRadius = parseFloat(value);
+      document.getElementById('radius-value').textContent = value;
+      this.updateFilterLabel();
+      this.renderOverview();
+      this.renderWarningsList();
+    },
+
+    updateFilterLabel() {
+      const activeFilter = document.getElementById('active-filter');
+      const filterLabel = document.getElementById('filter-label');
+
+      if (State.filterMode === 'province' && State.activeProvince) {
+        activeFilter.classList.remove('hidden');
+        filterLabel.textContent = `Tỉnh ${State.activeProvince}`;
+      } else if (State.filterMode === 'basin' && State.activeBasin !== '__ALL__') {
+        activeFilter.classList.remove('hidden');
+        filterLabel.textContent = `Lưu vực ${State.activeBasin}`;
+      } else if (State.filterMode === 'location' && State.userLocation) {
+        activeFilter.classList.remove('hidden');
+        filterLabel.textContent = `Trong bán kính ${State.locationRadius} km`;
+      } else {
+        activeFilter.classList.add('hidden');
+      }
+    },
+
+    clearFilter() {
+      State.filterMode = 'all';
+      State.activeProvince = null;
+      State.activeBasin = '__ALL__';
+      State.userLocation = null;
+
+      document.getElementById('province-select').value = '';
+      document.getElementById('basin-select').value = '';
+      document.getElementById('active-filter').classList.add('hidden');
+      document.getElementById('distance-slider-container').classList.add('hidden');
+      document.getElementById('location-status').textContent = '';
+
+      // Reset filter mode buttons
+      this.setFilterMode('all');
+    },
+
+    renderWarningsList() {
+      const container = document.getElementById('warnings-list');
+      let records = Data.getFilteredRecords();
+
+      // Helper function to get warning level category
+      const getWarningLevel = (r) => {
+        if (r.type === 'river') {
+          if (r.historicalLevel && r.water > r.historicalLevel) return 'high';
+          if (r.alert >= 3) return 'high';
+          if (r.alert >= 2) return 'medium';
+          if (r.alert >= 1) return 'low';
+          return 'none';
+        } else if (r.type === 'lake') {
+          if (r.percent > 105) return 'high';
+          if (r.percent > 100) return 'medium';
+          if (r.percent >= 90) return 'low';
+          return 'none';
+        }
+        return 'none';
+      };
+
+      // Helper function to get numeric warning score for sorting
+      const getWarningScore = (r) => {
+        if (r.type === 'river') {
+          if (r.historicalLevel && r.water > r.historicalLevel) return 1000; // Historical flood highest
+          return r.alert * 100; // BD3=300, BD2=200, BD1=100, BD0=0
+        } else if (r.type === 'lake') {
+          return r.percent || 0; // Sort by percentage
+        }
+        return 0;
+      };
+
+      // Apply detail filter (type)
+      if (State.detailFilter === 'river') {
+        records = records.filter(r => r.type === 'river');
+      } else if (State.detailFilter === 'lake') {
+        records = records.filter(r => r.type === 'lake');
+      }
+
+      // Apply warning level filter
+      if (State.warningLevelFilter !== 'all') {
+        records = records.filter(r => getWarningLevel(r) === State.warningLevelFilter);
+      }
+
+      // Sort by warning score (highest first)
+      const sorted = records.sort((a, b) => {
+        return getWarningScore(b) - getWarningScore(a);
+      });
+
+      // Check for ward-specific landslide warnings when in location mode
+      let wardLandslideHTML = '';
+      if (State.filterMode === 'location' && State.userLocation) {
+        const wardInfo = Data.getUserWard();
+        if (wardInfo && wardInfo.NAME_2) {
+          const landslideData = State.landslideRecords[wardInfo.NAME_2];
+          if (landslideData) {
+            const hasHighRisk = landslideData.nguycosatlo === 'Cao' || landslideData.nguycosatlo === 'Rất cao' ||
+                                landslideData.nguycoluquet === 'Cao' || landslideData.nguycoluquet === 'Rất cao';
+
+            if (hasHighRisk) {
+              const riskColor = (landslideData.nguycosatlo === 'Rất cao' || landslideData.nguycoluquet === 'Rất cao') ? '#a855f7' : '#f97316';
+              wardLandslideHTML = `
+                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4" style="border-left-color: ${riskColor};">
+                  <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-bold text-slate-900 mb-1">Nguy cơ sạt lở & lũ quét</h3>
+                      <p class="text-sm text-slate-600 mb-2">${wardInfo.NAME_2}, ${wardInfo.NAME_1}</p>
+                      <div class="space-y-1 text-sm">
+                        ${landslideData.nguycosatlo ? `
+                          <div class="flex items-center gap-2">
+                            <span class="text-slate-500">Sạt lở:</span>
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold"
+                                  style="background-color: ${landslideData.nguycosatlo === 'Rất cao' ? '#a855f7' : landslideData.nguycosatlo === 'Cao' ? '#f97316' : '#eab308'}; color: white;">
+                              ${landslideData.nguycosatlo}
+                            </span>
+                          </div>
+                        ` : ''}
+                        ${landslideData.nguycoluquet ? `
+                          <div class="flex items-center gap-2">
+                            <span class="text-slate-500">Lũ quét:</span>
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold"
+                                  style="background-color: ${landslideData.nguycoluquet === 'Rất cao' ? '#a855f7' : landslideData.nguycoluquet === 'Cao' ? '#f97316' : '#eab308'}; color: white;">
+                              ${landslideData.nguycoluquet}
+                            </span>
+                          </div>
+                        ` : ''}
+                      </div>
+                      <p class="text-xs text-slate-400 mt-2">Cảnh báo từ Trung tâm Dự báo Khí tượng Thủy văn Quốc gia</p>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          }
+        }
+      }
+
+      if (sorted.length === 0 && !wardLandslideHTML) {
+        container.innerHTML = `
+          <div class="bg-white rounded-xl p-6 text-center text-slate-500">
+            <p class="font-medium">Không có dữ liệu</p>
+          </div>
+        `;
+        return;
+      }
+
+      const stationHTML = sorted.map(r => {
+        const isLake = r.type === 'lake';
+        const color = isLake ? MapManager.getLakeColor(r.percent) : MapManager.getRiverColor(r);
+        const level = isLake ? `${formatDecimal(r.percent)}%` : (r.alertTrend || `Mức ${r.alert}`);
+
+        return `
+          <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition cursor-pointer border-l-4"
+               style="border-left-color: ${color};"
+               onclick="App.showDetailView('${r.code}')">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded text-xs font-bold text-white" style="background-color: ${color};">
+                    ${isLake ? 'Hồ' : 'Trạm'}
+                  </span>
+                  <h3 class="font-bold text-slate-900 truncate">${r.name}</h3>
+                </div>
+                <p class="text-sm text-slate-600 mb-2">${r.basin} • ${r.province}</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  ${isLake ? `
+                    <div><span class="text-slate-500">Dung tích:</span> <span class="font-mono font-semibold">${formatDecimal(r.storage)} triệu m³</span></div>
+                    <div><span class="text-slate-500">Tỷ lệ:</span> <span class="font-mono font-semibold">${formatDecimal(r.percent)}%</span></div>
+                    <div><span class="text-slate-500">Lưu lượng đến:</span> <span class="font-mono font-semibold">${formatDecimal(r.qIn)} m³/s</span></div>
+                    <div><span class="text-slate-500">Lưu lượng xả:</span> <span class="font-mono font-semibold">${formatDecimal(r.qOut)} m³/s</span></div>
+                  ` : `
+                    <div><span class="text-slate-500">Mực nước:</span> <span class="font-mono font-semibold">${formatDecimal(r.water)} m</span></div>
+                    <div><span class="text-slate-500">Cảnh báo:</span> <span class="font-semibold" style="color: ${color};">${level}</span></div>
+                    ${r.bd1 ? `<div><span class="text-slate-500">BĐ1:</span> <span class="font-mono">${formatDecimal(r.bd1)} m</span></div>` : ''}
+                    ${r.bd2 ? `<div><span class="text-slate-500">BĐ2:</span> <span class="font-mono">${formatDecimal(r.bd2)} m</span></div>` : ''}
+                  `}
+                </div>
+              </div>
+              <button class="shrink-0 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition" onclick="event.stopPropagation(); App.showDetailView('${r.code}')">
+                <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Combine station cards with ward landslide warning based on detail filter
+      if (State.detailFilter === 'landslide') {
+        // Only show landslide warnings
+        container.innerHTML = wardLandslideHTML || `
+          <div class="bg-white rounded-xl p-6 text-center text-slate-500">
+            <p class="font-medium">Không có cảnh báo sạt lở</p>
+          </div>
+        `;
+      } else if (State.detailFilter === 'all') {
+        // Show both stations and landslide warnings
+        container.innerHTML = stationHTML + (wardLandslideHTML ? '<div class="mt-4"></div>' + wardLandslideHTML : '');
+      } else {
+        // Show only stations (river or lake)
+        container.innerHTML = stationHTML || `
+          <div class="bg-white rounded-xl p-6 text-center text-slate-500">
+            <p class="font-medium">Không có dữ liệu</p>
+          </div>
+        `;
+      }
+    },
+
+    toggleMap() {
+      State.mapOpen = !State.mapOpen;
+      const container = document.getElementById('map-container');
+      const chevron = document.getElementById('map-chevron');
+
+      if (State.mapOpen) {
+        container.classList.add('open');
+        chevron.style.transform = 'rotate(180deg)';
+
+        // Initialize map if not already done
+        if (!MapManager.instance) {
+          setTimeout(() => {
+            MapManager.init();
+            MapManager.update();
+          }, 100);
+        } else {
+          setTimeout(() => {
+            MapManager.instance.invalidateSize();
+            MapManager.update();
+          }, 400);
+        }
+      } else {
+        container.classList.remove('open');
+        chevron.style.transform = 'rotate(0deg)';
+      }
+    },
+
+    filterByType(type) {
+      State.activeFilter = type;
+
+      // Update button states
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.classList.remove('bg-slate-200', 'text-slate-700');
+          btn.classList.add('bg-blue-600', 'text-white', 'active');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'active');
+          btn.classList.add('bg-slate-200', 'text-slate-700');
+        }
+      });
+
+      this.renderWarningsList();
+      if (MapManager.instance) {
+        MapManager.update();
+      }
+    }
+  };
+
+  /**
+   * MODULE: CHARTS
+   */
+  const Charts = {
+    destroyAll() {
+      State.chartInstances.forEach(c => c.destroy());
+      State.chartInstances = [];
+    },
+
+    commonOptions: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: {
+            font: { size: 11, family: 'IBM Plex Sans' },
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 10
+          }
+        },
+        tooltip: {
+          animation: false,
+          titleFont: { family: 'IBM Plex Sans' },
+          bodyFont: { family: 'IBM Plex Sans' }
+        }
+      },
+      elements: { point: { radius: 0, hoverRadius: 4 } },
+      scales: {
+        x: {
+          display: true,
+          type: 'time',
+          time: {
+            unit: 'day',
+            tooltipFormat: "H'h'mm, dd/MM/yyyy",
+            displayFormats: { day: 'dd/MM' }
+          },
+          ticks: { font: { size: 10 }, maxTicksLimit: 5, autoSkip: true }
+        },
+        y: {
+          ticks: { font: { size: 10 }, maxTicksLimit: 5 }
+        }
+      }
+    },
+
+    drawLakeStorageChart(canvas, data) {
+      const latest = data.length ? data[data.length - 1] : {};
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: Data.downsample(data, 'ts'),
+          datasets: [
+            {
+              label: 'Dung tích thực đo (triệu m³)',
+              data: Data.downsample(data, 'storage'),
+              borderColor: '#3b82f6',
+              borderWidth: 2,
+              fill: true,
+              backgroundColor: '#3b82f620',
+              tension: 0.1,
+              spanGaps: true
+            },
+            {
+              label: 'Dung tích thiết kế (triệu m³)',
+              data: Array(Data.downsample(data, 'ts').length).fill(latest.designStorage),
+              borderColor: '#f97316',
+              borderWidth: 1.5,
+              borderDash: [3,3],
+              fill: false,
+              spanGaps: true
+            }
+          ]
+        },
+        options: this.commonOptions
+      });
+      State.chartInstances.push(chart);
+      return chart;
+    },
+
+    drawRiverChart(canvas, data) {
+      const latest = data.length ? data[data.length - 1] : {};
+      const labels = Data.downsample(data, 'ts');
+      const datasets = [
+        {
+          label: 'Mực nước (m)',
+          data: Data.downsample(data, 'water'),
+          borderColor: '#0ea5e9',
+          borderWidth: 2,
+          fill: true,
+          backgroundColor: '#0ea5e920',
+          tension: 0.1,
+          spanGaps: true
+        }
+      ];
+
+      const alertLevels = [
+        { level: 'bd1', label: 'BĐ1', color: '#facc15' },
+        { level: 'bd2', label: 'BĐ2', color: '#f97316' },
+        { level: 'bd3', label: 'BĐ3', color: '#ef4444' }
+      ];
+
+      alertLevels.forEach(alert => {
+        if (latest[alert.level]) {
+          datasets.push({
+            label: alert.label,
+            data: Array(labels.length).fill(latest[alert.level]),
+            borderColor: alert.color,
+            borderWidth: 1,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            fill: false,
+          });
+        }
+      });
+
+      if (latest.historicalLevel) {
+        datasets.push({
+          label: `Lũ lịch sử (${latest.historicalYear || ''})`,
+          data: Array(labels.length).fill(latest.historicalLevel),
+          borderColor: '#7e22ce',
+          borderWidth: 1,
+          borderDash: [2, 2],
+          pointRadius: 0,
+          fill: false,
+        });
+      }
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: { labels, datasets },
+        options: this.commonOptions
+      });
+      State.chartInstances.push(chart);
+      return chart;
+    },
+
+    drawLakeFlowChart(canvas, data) {
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: Data.downsample(data, 'ts'),
+          datasets: [
+            {
+              label: 'Lưu lượng đến (m³/s)',
+              data: Data.downsample(data, 'qIn'),
+              borderColor: '#22c55e',
+              borderWidth: 1.5,
+              fill: false,
+              spanGaps: true
+            },
+            {
+              label: 'Lưu lượng xả (m³/s)',
+              data: Data.downsample(data, 'qOut'),
+              borderColor: '#ef4444',
+              borderWidth: 1.5,
+              fill: false,
+              spanGaps: true
+            }
+          ]
+        },
+        options: this.commonOptions
+      });
+      State.chartInstances.push(chart);
+      return chart;
+    },
+
+    drawDetailChart(code) {
+      // Get history for the station
+      const allHistory = State.allRecords.filter(r => r.code === code);
+      if (!allHistory || !allHistory.length) return;
+
+      const type = allHistory[0].type;
+      const container = document.getElementById('detail-chart-container');
+
+      if (type === 'lake') {
+        container.innerHTML = `
+          <div class="h-80 mb-6">
+            <h4 class="text-sm font-bold text-slate-700 mb-3">Dung tích hồ chứa</h4>
+            <canvas id="detail-chart-canvas-storage"></canvas>
+          </div>
+          <div class="h-80">
+            <h4 class="text-sm font-bold text-slate-700 mb-3">Lưu lượng nước</h4>
+            <canvas id="detail-chart-canvas-flow"></canvas>
+          </div>
+        `;
+        this.drawLakeStorageChart(document.getElementById('detail-chart-canvas-storage'), allHistory);
+        this.drawLakeFlowChart(document.getElementById('detail-chart-canvas-flow'), allHistory);
+      } else {
+        container.innerHTML = `
+          <div class="h-96">
+            <h4 class="text-sm font-bold text-slate-700 mb-3">Mực nước sông</h4>
+            <canvas id="detail-chart-canvas"></canvas>
+          </div>
+        `;
+        this.drawRiverChart(document.getElementById('detail-chart-canvas'), allHistory);
+      }
+    }
+  };
+
+  /**
+   * MODULE: SEARCH
+   */
+  const Search = {
+    debounceTimer: null,
+
+    showSuggestions() {
+      const input = document.getElementById('search-input');
+      if(input.value.trim() !== "") {
+        document.getElementById('search-suggestions').classList.remove('hidden');
+      }
+    },
+
+    hideSuggestions() {
+      document.getElementById('search-suggestions').classList.add('hidden');
+    },
+
+    handleInput() {
+      const input = document.getElementById('search-input');
+      const query = input.value.trim();
+
+      if (this.debounceTimer) clearTimeout(this.debounceTimer);
+
+      const listEl = document.getElementById('suggestions-list');
+
+      if (!query) {
+        listEl.innerHTML = '';
+        this.addMyLocationOption(listEl);
+        this.showSuggestions();
+        return;
+      }
+
+      this.debounceTimer = setTimeout(() => {
+        this.fetchNominatim(query);
+      }, 500);
+    },
+
+    async fetchNominatim(query) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&countrycodes=vn&limit=5&addressdetails=1`;
+
+        const response = await fetch(url, {
+          headers: { 'Accept-Language': 'vi' }
+        });
+
+        if (!response.ok) throw new Error('Lỗi kết nối');
+        const results = await response.json();
+        this.renderSuggestions(results);
+      } catch (error) {
+        console.error("Lỗi tìm kiếm:", error);
+      }
+    },
+
+    renderSuggestions(results) {
+      const listEl = document.getElementById('suggestions-list');
+      listEl.innerHTML = '';
+
+      this.addMyLocationOption(listEl);
+
+      results.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'suggestion-item px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-t border-slate-100';
+        li.textContent = item.display_name;
+        li.onclick = () => this.selectLocation(item);
+        listEl.appendChild(li);
+      });
+
+      document.getElementById('search-suggestions').classList.remove('hidden');
+    },
+
+    addMyLocationOption(container) {
+      const li = document.createElement('li');
+      li.className = 'suggestion-item px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm flex items-center gap-2 text-blue-600 font-medium';
+      li.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Vị trí của bạn
+      `;
+      li.onclick = () => this.useMyLocation();
+      container.appendChild(li);
+    },
+
+    useMyLocation() {
+      if (MapManager.instance) {
+        MapManager.instance.locate({setView: true, maxZoom: 12});
+      }
+      this.hideSuggestions();
+    },
+
+    selectLocation(item) {
+      if (!MapManager.instance) return;
+
+      if (item.boundingbox) {
+        const bb = item.boundingbox;
+        const bounds = [
+          [parseFloat(bb[0]), parseFloat(bb[2])],
+          [parseFloat(bb[1]), parseFloat(bb[3])]
+        ];
+        MapManager.instance.fitBounds(bounds);
+      } else {
+        MapManager.instance.setView([parseFloat(item.lat), parseFloat(item.lon)], 14);
+      }
+
+      MapManager.layers.highlight.clearLayers();
+      L.marker([parseFloat(item.lat), parseFloat(item.lon)])
+        .addTo(MapManager.layers.highlight)
+        .bindPopup(item.display_name)
+        .openPopup();
+
+      this.hideSuggestions();
+      document.getElementById('search-input').value = item.display_name;
+    }
+  };
+
+  /**
+   * MODULE: APP
+   */
+  const App = {
+    init() {
+      Data.init();
+    },
+
+    updateView() {
+      UI.renderWarningsList();
+
+      if (MapManager.instance) {
+        MapManager.update();
+      }
+    },
+
+    clearSelection() {
+      State.activeBasin = '__ALL__';
+      State.activeProvince = null;
+      this.updateView();
+    },
+
+    switchLayer(layerName) {
+      State.activeLayer = layerName;
+
+      // Update button states
+      document.querySelectorAll('.layer-btn').forEach(btn => {
+        if (btn.dataset.layer === layerName) {
+          btn.classList.remove('border-transparent');
+          btn.classList.add('border-blue-600', 'bg-blue-50', 'active');
+        } else {
+          btn.classList.remove('border-blue-600', 'bg-blue-50', 'active');
+          btn.classList.add('border-transparent');
+        }
+      });
+
+      // Update map layer visibility
+      if (MapManager.instance) {
+        MapManager.updateLayerVisibility();
+      }
+    },
+
+    showStationOnMap(code) {
+      const station = State.latestRecords.find(r => r.code === code);
+      if (!station || !station.lat || !station.lng) return;
+
+      // Open map if not already open
+      if (!State.mapOpen) {
+        UI.toggleMap();
+      }
+
+      setTimeout(() => {
+        if (MapManager.instance) {
+          MapManager.instance.setView([station.lat, station.lng], 12);
+
+          // Find and open the marker popup
+          MapManager.layers.station.eachLayer(layer => {
+            if (layer.getLatLng && layer.getLatLng().lat === station.lat && layer.getLatLng().lng === station.lng) {
+              layer.openPopup();
+            }
+          });
+        }
+      }, 500);
+    },
+
+    showDetailView(code) {
+      const allHistory = State.allRecords.filter(r => r.code === code);
+      if (!allHistory || !allHistory.length) return;
+
+      const latest = allHistory[allHistory.length - 1];
+
+      document.getElementById('detail-title').textContent = latest.name;
+      document.getElementById('detail-subtitle').textContent = `Sông ${latest.basin} • ${latest.province}`;
+
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      Charts.destroyAll();
+      Charts.drawDetailChart(code);
+    },
+
+    hideDetailView(event) {
+      if (event && event.target.id !== 'detail-modal') return;
+
+      const modal = document.getElementById('detail-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+
+      Charts.destroyAll();
+    },
+
+    refreshData() {
+      window.location.reload();
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => App.init());
+  </script>
+</body>
+</html>
